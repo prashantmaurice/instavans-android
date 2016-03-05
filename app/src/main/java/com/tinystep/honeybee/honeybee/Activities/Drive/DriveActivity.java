@@ -1,7 +1,9 @@
 package com.tinystep.honeybee.honeybee.Activities.Drive;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
@@ -62,10 +64,20 @@ public class DriveActivity extends FragmentActivity implements GoogleApiClient.C
         btn_end = (TextView) findViewById(R.id.btn_end);
         btn_instructions = (TextView) findViewById(R.id.btn_instructions);
 
+        tv_title.setText(jobObj.address);
         userMain = MainApplication.getInstance().data.userMain;
-        if(userMain.isTrackStarted(jobObj.jobId)){
 
-        }
+        findViewById(R.id.btn_google).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri gmmIntentUri = Uri.parse("google.navigation:q="+jobObj.lat+","+jobObj.longg+"&avoid=tf");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+            }
+        });
+
+        refreshButtons();
 
         buildGoogleApiClient();
         setUpMapIfNeeded();
@@ -75,6 +87,48 @@ public class DriveActivity extends FragmentActivity implements GoogleApiClient.C
 
         recreateMarkers();
         scrollToJob(jobObj);
+    }
+
+    private void refreshButtons() {
+        if(userMain.isTrackStarted(jobObj.jobId)&&!userMain.isTrackFinished(jobObj.jobId)){
+            //Present
+            btn_start.setVisibility(View.GONE);
+            btn_end.setVisibility(View.VISIBLE);
+        }else if(userMain.isTrackFinished(jobObj.jobId)){
+            //Past
+            btn_start.setVisibility(View.GONE);
+            btn_end.setVisibility(View.GONE);
+        }else{
+            long millis = jobObj.arrivalTime-System.currentTimeMillis();
+            if(millis<0){
+                //Future
+                btn_start.setVisibility(View.GONE);
+                btn_end.setVisibility(View.GONE);
+            }else {
+                //Future
+                btn_start.setVisibility(View.VISIBLE);
+                btn_end.setVisibility(View.GONE);
+            }
+        }
+        if(!data.isAccepted(jobObj.jobId)){
+            btn_start.setVisibility(View.GONE);
+            btn_end.setVisibility(View.GONE);
+        }
+
+        btn_start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userMain.setStartTrack(jobObj.jobId);
+                refreshButtons();
+            }
+        });
+        btn_end.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userMain.setEndtrack(jobObj.jobId);
+                refreshButtons();
+            }
+        });
     }
 
     private void drawPolygons(Location mLastLocation) {

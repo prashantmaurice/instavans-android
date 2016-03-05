@@ -78,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(LocalBroadcastHandler.OFFERS_UPDATED));
+        if(mSectionsPagerAdapter!=null){
+            mSectionsPagerAdapter.getDoneFrag().notifyDataSetChanged();
+            mSectionsPagerAdapter.getOffersFrag().notifyDataSetChanged();
+        }
     }
 
     // handler for received Intents from xmppservice

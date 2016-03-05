@@ -25,7 +25,6 @@ public class UserMain {
     public ArrayList<String> shownJobs = new ArrayList<>();
     public ArrayList<TransitObj> transits = new ArrayList<>();
     public String phone;
-    private boolean trackStarted;
 
 
     private UserMain(Context context) {
@@ -120,6 +119,9 @@ public class UserMain {
         return false;
     }
 
+    public boolean isInTransit(String jobId){
+        return isTrackStarted(jobId)&&!isTrackFinished(jobId);
+    }
 
     public boolean isTrackStarted(String jobId) {
         for(TransitObj tr : transits){
@@ -136,5 +138,39 @@ public class UserMain {
             }
         }
         return false;
+    }
+
+    public void setStartTrack(String jobId) {
+        boolean found = false;
+        for(TransitObj tr : transits){
+            if(tr.jobId.equals(jobId)){
+                found = true;
+            }
+        }
+        if(!found){
+            TransitObj obj = new TransitObj();
+            obj.jobId = jobId;
+            obj.started = System.currentTimeMillis();
+            obj.ended = 0L;
+            transits.add(obj);
+        }
+        saveUserDataLocally();
+    }
+    public void setEndtrack(String jobId){
+        for(TransitObj tr : transits){
+            if(tr.jobId.equals(jobId)){
+                tr.ended = System.currentTimeMillis();
+            }
+        }
+        saveUserDataLocally();
+    }
+
+    public TransitObj getTransit(String jobId){
+        for(TransitObj tr : transits){
+            if(tr.jobId.equals(jobId)){
+                return tr;
+            }
+        }
+        return null;
     }
 }

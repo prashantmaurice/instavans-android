@@ -23,6 +23,8 @@ import com.tinystep.honeybee.honeybee.Utils.NetworkCallback;
 import com.tinystep.honeybee.honeybee.storage.Data;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * This is the main fragment user for listing user Notifications
@@ -34,6 +36,7 @@ public class OffersFragment extends android.support.v4.app.Fragment {
     ListView notificationsLV;
     SwipeRefreshLayout refresh_cont;
     OffersFragAdapter adapter;
+    View cont_noevents;
     Data data;
 
     public OffersFragment() {
@@ -59,6 +62,7 @@ public class OffersFragment extends android.support.v4.app.Fragment {
 
         notificationsLV = (ListView) rootView.findViewById(R.id.notificationsLV);
 
+        cont_noevents = rootView.findViewById(R.id.cont_noevents);
         data = Data.getInstance(mActivity);
         adapter = new OffersFragAdapter(getActivity(), allSMSDirectories);
         notificationsLV.setAdapter(adapter);
@@ -132,8 +136,21 @@ public class OffersFragment extends android.support.v4.app.Fragment {
                 allSMSDirectories.add(job);
             }
         }
+        cont_noevents.setVisibility(allSMSDirectories.size()==0?View.VISIBLE:View.GONE);
+        sort();
         adapter.notifyDataSetChanged();
     }
+
+    public void sort(){
+        Collections.sort(allSMSDirectories, new Comparator<JobObj>() {
+            @Override
+            public int compare(JobObj s1, JobObj s2) {
+                return -s1.arrivalTime.compareTo(s2.arrivalTime);
+            }
+        });
+    }
+
+
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {

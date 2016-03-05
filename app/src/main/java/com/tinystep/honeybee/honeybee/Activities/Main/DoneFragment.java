@@ -23,6 +23,8 @@ import com.tinystep.honeybee.honeybee.Utils.NetworkCallback;
 import com.tinystep.honeybee.honeybee.storage.Data;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * This is the main fragment user for listing user Notifications
@@ -34,6 +36,7 @@ public class DoneFragment extends android.support.v4.app.Fragment {
     ListView notificationsLV;
     SwipeRefreshLayout refresh_cont;
     DoneFragAdapter adapter;
+    View cont_noevents;
     Data data;
 
     public DoneFragment() {
@@ -60,6 +63,7 @@ public class DoneFragment extends android.support.v4.app.Fragment {
         notificationsLV = (ListView) rootView.findViewById(R.id.notificationsLV);
 
         data = Data.getInstance(mActivity);
+        cont_noevents = rootView.findViewById(R.id.cont_noevents);
         adapter = new DoneFragAdapter(getActivity(), allSMSDirectories);
         notificationsLV.setAdapter(adapter);
         refresh_cont = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_cont);
@@ -126,7 +130,18 @@ public class DoneFragment extends android.support.v4.app.Fragment {
     public void notifyDataSetChanged() {
         allSMSDirectories.clear();
         allSMSDirectories.addAll(MainApplication.getInstance().data.done);
+        cont_noevents.setVisibility(allSMSDirectories.size()==0?View.VISIBLE:View.GONE);
+        sort();
         adapter.notifyDataSetChanged();
+    }
+
+    public void sort(){
+        Collections.sort(allSMSDirectories, new Comparator<JobObj>() {
+            @Override
+            public int compare(JobObj s1, JobObj s2) {
+                return -s1.arrivalTime.compareTo(s2.arrivalTime);
+            }
+        });
     }
 
     @Override

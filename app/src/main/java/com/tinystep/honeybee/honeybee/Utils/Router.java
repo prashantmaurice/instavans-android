@@ -19,6 +19,9 @@ public class Router {
         public static String main(){
             return getNewDefaultBuilder().path("api").appendPath("user").build().toString();
         }
+        public static String locationUpdate(){
+            return getNewDefaultBuilder().path("api").appendPath("user").build().toString();
+        }
     }
 
     public static class Jobs{

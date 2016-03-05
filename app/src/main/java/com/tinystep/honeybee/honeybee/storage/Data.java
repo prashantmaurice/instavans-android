@@ -214,6 +214,13 @@ public class Data {
         userMain.saveUserDataLocally();
     }
 
+    public boolean isAccepted(String jobId){
+        for(JobObj job : done){
+            if(job.jobId.equals(jobId)) return true;
+        }
+        return false;
+    }
+
     public void ignoreOffer(JobObj msg) {
         userMain.addIgnored(msg);
     }

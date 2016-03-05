@@ -10,13 +10,22 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.tinystep.honeybee.honeybee.Controllers.SocketController;
+import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.Models.UserMain;
+import com.tinystep.honeybee.honeybee.Utils.Logg;
+import com.tinystep.honeybee.honeybee.Utils.Router;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -84,17 +93,28 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     }
 
     private void dumpDataInServer() {
-//        String url = Router.User.addMarker(MainApplication.getInstance().data.userMain.userId, profielId);
-//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,new JSONObject(),new Response.Listener<JSONObject>() {
-//            @Override
-//            public void onResponse(JSONObject jsonObject) {
-//                Utils.showDebugToast(TrackingService.this,"Sent to server");
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError volleyError) {}
-//        });
-//        MainApplication.getInstance().getRequestQueue().add(jsonObjectRequest);
+        String url = Router.Login.locationUpdate();
+        if(mCurrentLocation==null) return;
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("lat",mCurrentLocation.getLatitude());
+            jsonObject.put("userId",MainApplication.getInstance().data.userMain.userId);
+            jsonObject.put("lng",mCurrentLocation.getLongitude());
+
+
+            MainApplication.getInstance().addRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonObject) {
+                    Logg.d(TAG, "USER ATA : " + jsonObject.toString());
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Logg.e(TAG, "ERROR : " + volleyError);
+                }
+            });
+        } catch (JSONException e) {e.printStackTrace();}
+
     }
 
 

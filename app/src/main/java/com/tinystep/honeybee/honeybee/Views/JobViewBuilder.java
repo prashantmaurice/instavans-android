@@ -12,6 +12,7 @@ import com.tinystep.honeybee.honeybee.Activities.Drive.DriveActivity;
 import com.tinystep.honeybee.honeybee.Controllers.LocalBroadcastHandler;
 import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.Models.JobObj;
+import com.tinystep.honeybee.honeybee.Models.UserMain;
 import com.tinystep.honeybee.honeybee.R;
 import com.tinystep.honeybee.honeybee.Utils.Logg;
 import com.tinystep.honeybee.honeybee.Utils.NetworkCallback;
@@ -62,30 +63,30 @@ public class JobViewBuilder {
         public void inflateData(final JobObj msg){
             Logg.d(TAG, "Inflating data in Job view");
             tv_header.setText(msg.jobId+":"+msg.address);
-            tv_subheader.setText(""+msg.arrivalTime);
 
-            String dateString = new SimpleDateFormat("dd LLL yyyy").format(new Date(msg.arrivalTime));
-            String dateString2 = new SimpleDateFormat("dd LLL yyyy").format(new Date(msg.endTime));
-            tv_subheader2.setText(dateString+" - "+dateString2);
+            final UserMain userMain = MainApplication.getInstance().data.userMain;
+            if(userMain.isInTransit(msg.jobId)){
+                long millis = System.currentTimeMillis()-userMain.getTransit(msg.jobId).started;
+                long minutes = millis/(1000*60);
+                tv_subheader.setText(minutes+" minutes In Transit");
+                left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.present));
 
-            long curr = System.currentTimeMillis();
-
-
-            if(msg.arrivalTime>curr){
-                //Future
-                btn_two.setText("Ignore");
+                btn_two.setText("Finish");
                 btn_two.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        data.ignoreOffer(msg);
+//                        data.ignoreOffer(msg);
+                        userMain.setEndtrack(msg.jobId);
                         LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.OFFERS_UPDATED);
                     }
                 });
 
+            }else if(userMain.isTrackFinished(msg.jobId)){
+                long millis = System.currentTimeMillis()-userMain.getTransit(msg.jobId).started;
+                long minutes = millis/(1000*60);
+                tv_subheader.setText("finished transit in "+minutes+" minutes");
+                left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.past));
 
-                left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.future));
-            }else if(msg.endTime<curr){
-                //Past
                 btn_two.setText("View");
                 btn_two.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -97,23 +98,50 @@ public class JobViewBuilder {
 //                        LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.OFFERS_UPDATED);
                     }
                 });
-                left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.past));
+
             }else{
-                //Current
-                btn_two.setText("Navigate");
-                btn_two.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(mContext,DriveActivity.class);
-                        intent.putExtra("data",msg.encode().toString());
-                        mContext.startActivity(intent);
+                long millis = msg.arrivalTime-System.currentTimeMillis();
+                long minutes = millis/(1000*60);
+                if(millis<0){
+                    tv_subheader.setText("you missed this");
+                    left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.missed));
+
+                    btn_two.setText("View");
+                    btn_two.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+//                        data.ignoreOffer(msg);
+                            Intent intent = new Intent(mContext,DriveActivity.class);
+                            intent.putExtra("data",msg.encode().toString());
+                            mContext.startActivity(intent);
+//                        LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.OFFERS_UPDATED);
+                        }
+                    });
+
+                }else{
+                    tv_subheader.setText("Will start in "+minutes+" minutes");
+                    left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.future));
+
+                    btn_two.setText("Navigate");
+                    btn_two.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(mContext,DriveActivity.class);
+                            intent.putExtra("data",msg.encode().toString());
+                            mContext.startActivity(intent);
 //                        data.ignoreOffer(msg);
 //                        LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.OFFERS_UPDATED);
-                    }
-                });
-                left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.present));
+                        }
+                    });
+                }
             }
 
+
+            String dateString = new SimpleDateFormat("dd LLL HH:mm").format(new Date(msg.arrivalTime));
+            String dateString2 = new SimpleDateFormat("dd LLL HH:mm").format(new Date(msg.endTime));
+            tv_subheader2.setText(dateString+" - "+dateString2);
+
+            btn_one.setVisibility((data.isAccepted(msg.jobId))?View.GONE:View.VISIBLE);
             btn_one.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
