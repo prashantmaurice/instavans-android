@@ -8,9 +8,11 @@ import java.util.ArrayList;
 
 public class JobObj implements Comparable<JobObj> {
 
-    public String jobId;
-    public Long startTime,endTime;
-    public int cost = 0;
+    public String jobId = "";
+    public Long startTime = 1457286107000L,endTime = 1457386107000L;
+    public double lat,longg;
+    public String address = "No address";
+    public int cost = 1000;
 
     public JobObj() {}
 
@@ -21,6 +23,9 @@ public class JobObj implements Comparable<JobObj> {
             re.jobId = (obj.has("jobId")) ? obj.getString("jobId") : null;
             re.startTime = (obj.has("startTime")) ? obj.getLong("startTime") : 0;
             re.endTime = (obj.has("endTime")) ? obj.getLong("endTime") : 0;
+            re.lat = (obj.has("lat")) ? obj.getLong("lat") : 0;
+            re.longg = (obj.has("longg")) ? obj.getLong("longg") : 0;
+            re.address = (obj.has("address")) ? obj.getString("address") : "No address";
             re.cost = (obj.has("cost")) ? obj.getInt("cost") : 0;
         } catch (JSONException e) {e.printStackTrace();}
         return re;

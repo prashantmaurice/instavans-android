@@ -16,6 +16,7 @@ public class UserMain {
     private SharedPrefs sPrefs;
     public String name;
     public String userId;
+    public double lat, longg;
     public String xmppPass;
     public String email;
     public String imageUrl;
@@ -50,6 +51,8 @@ public class UserMain {
             name = (sPrefs.userData.has("name"))?sPrefs.userData.getString("name"):"";
             phone = (sPrefs.userData.has("phone"))?sPrefs.userData.getString("phone"):"";
             userId = (sPrefs.userData.has("userId"))?sPrefs.userData.getString("userId"):"";
+            lat = (sPrefs.userData.has("lat"))?sPrefs.userData.getDouble("lat"):0;
+            longg = (sPrefs.userData.has("longg"))?sPrefs.userData.getDouble("longg"):0;
         } catch (JSONException e) {e.printStackTrace();}
     }
     public void saveUserDataLocally() {
@@ -57,8 +60,16 @@ public class UserMain {
             sPrefs.userData.put("userId", userId);
             sPrefs.userData.put("phone", phone);
             sPrefs.userData.put("name", name);
+            sPrefs.userData.put("lat", lat);
+            sPrefs.userData.put("longg", longg);
         } catch (JSONException e) {e.printStackTrace();}
         sPrefs.saveUserData();
+    }
+
+    public void setLocation(double lat, double longg){
+        this.lat = lat;
+        this.longg = longg;
+        saveUserDataLocally();
     }
 
 

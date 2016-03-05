@@ -1,5 +1,6 @@
 package com.tinystep.honeybee.honeybee.Activities.Main;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.Models.JobObj;
 import com.tinystep.honeybee.honeybee.R;
 import com.tinystep.honeybee.honeybee.Utils.NetworkCallback;
+import com.tinystep.honeybee.honeybee.storage.Data;
 
 import java.util.ArrayList;
 
@@ -27,6 +29,7 @@ public class OffersFragment extends android.support.v4.app.Fragment {
     ListView notificationsLV;
     SwipeRefreshLayout refresh_cont;
     OffersFragAdapter adapter;
+    Data data;
 
     public OffersFragment() {
     }
@@ -51,7 +54,9 @@ public class OffersFragment extends android.support.v4.app.Fragment {
 
         notificationsLV = (ListView) rootView.findViewById(R.id.notificationsLV);
 
+        data = Data.getInstance(mActivity);
         adapter = new OffersFragAdapter(getActivity(), allSMSDirectories);
+        notificationsLV.setAdapter(adapter);
         refresh_cont = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_cont);
         refresh_cont.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -59,13 +64,12 @@ public class OffersFragment extends android.support.v4.app.Fragment {
                 completeRefresh();
             }
         });
-
         notifyDataSetChanged();
         return rootView;
     }
 
     public void completeRefresh(){
-        mActivity.getData().pullOffersFromServer(new NetworkCallback() {
+        data.pullOffersFromServer(new NetworkCallback() {
             @Override
             public void onSuccess() {
                 notifyDataSetChanged();
@@ -84,9 +88,6 @@ public class OffersFragment extends android.support.v4.app.Fragment {
         allSMSDirectories.clear();
         allSMSDirectories.addAll(MainApplication.getInstance().data.offers);
         adapter.notifyDataSetChanged();
-
-
-
     }
 
     @Override
@@ -105,6 +106,12 @@ public class OffersFragment extends android.support.v4.app.Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.mActivity = (MainActivity) activity;
     }
 
 }

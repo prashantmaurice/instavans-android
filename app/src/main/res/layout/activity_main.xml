@@ -23,7 +23,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Grim Reaper"
+                android:text="Portrayed"
                 android:id="@+id/textView3"
                 android:textColor="#fff"
                 android:gravity="center_vertical"
@@ -35,7 +35,7 @@
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:id="@+id/btn_curate"
-                android:src="@android:drawable/ic_menu_upload_you_tube"
+                android:src="@android:drawable/ic_dialog_map"
                 android:padding="5dp"
                 android:visibility="visible" />
         </LinearLayout>

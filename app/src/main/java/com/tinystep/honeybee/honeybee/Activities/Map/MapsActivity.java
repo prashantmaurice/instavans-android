@@ -1,31 +1,56 @@
 package com.tinystep.honeybee.honeybee.Activities.Map;
 
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.tinystep.honeybee.honeybee.Models.JobObj;
 import com.tinystep.honeybee.honeybee.R;
+import com.tinystep.honeybee.honeybee.Utils.Logg;
+import com.tinystep.honeybee.honeybee.storage.Data;
 
 public class MapsActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    static final String TAG = "MAPSACTIVITY";
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     MapDataHandler mapDataHandler;
-    View btn_myhistory, btn_others;
+    ViewPager mViewPager;
+    SectionsPagerAdapter mSectionsPagerAdapter;
+    Data data;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         buildGoogleApiClient();
         setUpMapIfNeeded();
+        data = Data.getInstance(this);
+
+
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+
     }
 
 
@@ -51,21 +76,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         setUpMapIfNeeded();
     }
 
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
-     * <p/>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p/>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
-     */
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -81,23 +91,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
     private void setUpHandlerAndUI(){
         mapDataHandler = new MapDataHandler(mMap,this);
         mapDataHandler.setUpMap();
-
-//        btn_myhistory = findViewById(R.id.btn_myhistory);
-//        btn_myhistory.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mapDataHandler.showMyHistory();
-//            }
-//        });
-//
-//        btn_others = findViewById(R.id.btn_others);
-//        btn_others.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mapDataHandler.showAllUsers();
-//            }
-//        });
-
     }
 
 
@@ -120,6 +113,74 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
     }
 
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * one of the sections/tabs/pages.
+     */
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        MapsActivity mActivity;
+        public SectionsPagerAdapter(FragmentManager fm, MapsActivity activity) {
+            super(fm);
+            mActivity = activity;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            DataFragment frag = new DataFragment();
+            frag.setActivity(mActivity);
+            frag.setData(data.offers.get(position));
+            return frag;
+        }
+
+        @Override
+        public int getCount() {
+            // Show 4 total pages.
+            return data.offers.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "";
+        }
+
+    }
+
+    public static class DataFragment extends Fragment {
+
+        public View mainView;
+        public TextView tv_header, tv_subheader, tv_subheader2;
+        public Context mContext;
+        private JobObj data;
+
+        public DataFragment() {}
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View dataView = inflater.inflate(R.layout.mycards_frag_list_item, container, false);
+            mainView = dataView;
+            tv_header = (TextView) dataView.findViewById(R.id.tv_header);
+            tv_subheader = (TextView) dataView.findViewById(R.id.tv_subheader);
+            tv_subheader2 = (TextView) dataView.findViewById(R.id.tv_subheader2);
+            inflateData(data);
+            return dataView;
+        }
+
+        public void setActivity(Context activity){
+            mContext = activity;
+        }
+
+        public void inflateData(final JobObj msg){
+            Logg.d(TAG, "Inflating data in Job view");
+            tv_header.setText(""+msg.address);
+            tv_subheader.setText(""+msg.startTime);
+        }
+
+        public void setData(JobObj data) {
+            this.data = data;
+        }
+    }
 
 }

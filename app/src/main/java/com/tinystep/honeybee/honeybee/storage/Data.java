@@ -42,6 +42,9 @@ public class Data {
     private Data(Context context) {
         mContext = context;
         userMain = UserMain.getInstance(context);
+        offers.add(new JobObj());
+        offers.add(new JobObj());
+        offers.add(new JobObj());
 
         completePullFromServer();
     }
@@ -67,8 +70,8 @@ public class Data {
         String url = Router.Jobs.offers();
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("lat",1);
-            jsonObject.put("long",1);
+            jsonObject.put("lat",userMain.lat);
+            jsonObject.put("long",userMain.longg);
             jsonObject.put("radius",1000000);
         } catch (JSONException e) {e.printStackTrace();}
         Logg.m("MAIN", "Pulling offers data from server : ");
@@ -78,9 +81,9 @@ public class Data {
             public void onResponse(JSONObject jsonObject) {
                 Logg.d(TAG, "USER DATA : " + jsonObject.toString());
                 try {
-                    JSONObject result = jsonObject.getJSONObject("result");
-                    JSONArray offersJSON = result.getJSONArray("offers");
+                    JSONArray offersJSON = jsonObject.getJSONArray("result");
                     offers.clear();
+                    offers.add(new JobObj());
                     offers.addAll(JobObj.decode(offersJSON));
                     LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.OFFERS_UPDATED);
 
@@ -108,11 +111,9 @@ public class Data {
             public void onResponse(JSONObject jsonObject) {
                 Logg.d(TAG, "USER DATA : " + jsonObject.toString());
                 try {
-                    JSONObject result = jsonObject.getJSONObject("result");
-                    JSONArray offersJSON = result.getJSONArray("done");
+                    JSONArray offersJSON = jsonObject.getJSONArray("result");
                     done.clear();
                     done.addAll(JobObj.decode(offersJSON));
-
                     LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.DONE_UPDATED);
 
 
@@ -120,6 +121,27 @@ public class Data {
                     e.printStackTrace();
                 }
                 if(callback!=null) callback.onSuccess();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Logg.e(TAG, "ERROR : " + volleyError);
+                if(callback!=null) callback.onError();
+            }
+        });
+    }
+
+    /** ACTIONS */
+    public void acceptOffer(final NetworkCallback callback){
+        String url = Router.Jobs.accept();
+        JSONObject jsonObject = new JSONObject();
+        Logg.m("MAIN", "Accept offers data from server : ");
+
+        MainApplication.getInstance().addRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                Logg.d(TAG, "USER DATA : " + jsonObject.toString());
+                if(callback!=null) pullOffersFromServer(callback);
             }
         }, new Response.ErrorListener() {
             @Override

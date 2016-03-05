@@ -2,6 +2,7 @@
     <string name="app_name">HoneyBee</string>
     <string name="title_activity_maps">Honey Bee</string>
     <string name="local_ip">192.168.6.171:3000</string>
+    <!--<string name="local_ip">192.168.6.242:3000</string>-->
     <string name="title_activity_login">Honey Bee</string>
 
     <string name="hello_world">Hello world!</string>

@@ -8,7 +8,8 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refresh_cont"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#eee">
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"

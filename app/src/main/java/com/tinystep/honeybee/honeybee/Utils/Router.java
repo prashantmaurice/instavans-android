@@ -60,6 +60,9 @@ public class Router {
         public static String completed(){
             return getNewDefaultBuilder().path("api/porter-request").build().toString();
         }
+        public static String accept(){
+            return getNewDefaultBuilder().path("api/porter-request").build().toString();
+        }
 
     }
 

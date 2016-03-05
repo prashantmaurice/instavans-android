@@ -15,6 +15,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.tinystep.honeybee.honeybee.Models.UserMain;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -29,6 +30,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     NotificationManager mNM;
     int NOTIFICATION_ID = 112;
     static String TAG = "SERVICE";
+    UserMain userMain;
     LocationRequest mLocationRequest = new LocationRequest()
             .setInterval(60*1000)
             .setFastestInterval(5000)
@@ -36,6 +38,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
 
     public TrackingService() {
         instance = this;
+        userMain = UserMain.getInstance(this);
     }
 
     protected void startLocationUpdates() {
@@ -68,7 +71,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        Log.d(TAG,"LocationServices onLocationChanged");
+        userMain.setLocation(location.getLatitude(),location.getLongitude());
         Log.d(TAG,"LOCATION UPDATE"+mCurrentLocation.toString());
         dumpDataInServer();
     }
