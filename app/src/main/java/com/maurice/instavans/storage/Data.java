@@ -66,6 +66,11 @@ public class Data {
     public void pullOffersFromServer(final NetworkCallback callback){
         String url = Router.Jobs.offers();
         JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("lat",1);
+            jsonObject.put("long",1);
+            jsonObject.put("radius",1000000);
+        } catch (JSONException e) {e.printStackTrace();}
         Logg.m("MAIN", "Pulling offers data from server : ");
 
         MainApplication.getInstance().addRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {

@@ -19,7 +19,7 @@ public class Router {
     };
 
     private static Uri.Builder getNewDefaultBuilder() {
-        return new Uri.Builder().scheme(DEFAULT_SCHEME).encodedAuthority(DEFAULT_AUTHORITY).appendQueryParameter("version",API_VERSION);
+        return new Uri.Builder().scheme(DEFAULT_SCHEME).encodedAuthority(DEFAULT_AUTHORITY);
     }
 
 
@@ -43,18 +43,22 @@ public class Router {
     public static class Login{
 
         public static String main(){
-            return getNewDefaultBuilder().path("login").build().toString();
+            return getNewDefaultBuilder().path("api").appendPath("user").build().toString();
         }
 
     }
 
     public static class Jobs{
 
+        static Uri.Builder getSubPath(){
+            return getNewDefaultBuilder().path("api/porter-request");
+        }
+
         public static String offers(){
-            return getNewDefaultBuilder().path("offers").build().toString();
+            return getSubPath().appendPath("porter").build().toString();
         }
         public static String completed(){
-            return getNewDefaultBuilder().path("done").build().toString();
+            return getNewDefaultBuilder().path("api/porter-request").build().toString();
         }
 
     }

@@ -31,13 +31,7 @@ public class LoginActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userMain = MainApplication.getInstance().data.userMain;
-        if(userMain.loggedIn()){
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
-        }
+        goToMainApp();
 
 
         setContentView(R.layout.activity_login);
@@ -55,6 +49,16 @@ public class LoginActivity extends FragmentActivity {
         editText = (EditText) findViewById(R.id.editText);
 
 
+    }
+
+    private void goToMainApp(){
+        if(userMain.loggedIn()){
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void tryLoggingIn() {
@@ -76,6 +80,7 @@ public class LoginActivity extends FragmentActivity {
                     userMain.userId = userId;
                     userMain.saveUserDataLocally();
 
+                    goToMainApp();
 
 
                 } catch (JSONException e) {

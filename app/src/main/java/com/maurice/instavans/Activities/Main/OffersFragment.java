@@ -13,6 +13,7 @@ import android.widget.ListView;
 import com.maurice.instavans.MainApplication;
 import com.maurice.instavans.Models.JobObj;
 import com.maurice.instavans.R;
+import com.maurice.instavans.Utils.NetworkCallback;
 
 import java.util.ArrayList;
 
@@ -55,7 +56,7 @@ public class OffersFragment extends android.support.v4.app.Fragment {
         refresh_cont.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                notifyDataSetChanged();
+                completeRefresh();
             }
         });
 
@@ -63,10 +64,29 @@ public class OffersFragment extends android.support.v4.app.Fragment {
         return rootView;
     }
 
+    public void completeRefresh(){
+        mActivity.getData().pullOffersFromServer(new NetworkCallback() {
+            @Override
+            public void onSuccess() {
+                notifyDataSetChanged();
+                refresh_cont.setRefreshing(false);
+            }
+
+            @Override
+            public void onError() {
+                notifyDataSetChanged();
+                refresh_cont.setRefreshing(false);
+            }
+        });
+    }
+
     public void notifyDataSetChanged() {
         allSMSDirectories.clear();
         allSMSDirectories.addAll(MainApplication.getInstance().data.offers);
         adapter.notifyDataSetChanged();
+
+
+
     }
 
     @Override
