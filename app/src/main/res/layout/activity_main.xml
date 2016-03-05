@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="6dp"
+        android:translationZ="4dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="48dip"
+            android:background="@color/ColorPrimary"
+            android:paddingLeft="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Grim Reaper"
+                android:id="@+id/textView3"
+                android:textColor="#fff"
+                android:gravity="center_vertical"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:id="@+id/btn_curate"
+                android:src="@android:drawable/ic_menu_upload_you_tube"
+                android:padding="5dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="48dip"
+            app:pstsShouldExpand ="true"
+            app:pstsDividerColor="#0000"
+            app:pstsUnderlineColor="#0000"
+            app:pstsUnderlineHeight="4dp"
+            app:pstsTabPaddingLeftRight = "16dp"
+            app:pstsIndicatorColor="@color/ColorPrimaryLight"
+            android:background="@color/ColorPrimary" />
+
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:textColor="#fff"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="0dp" />
+</LinearLayout>

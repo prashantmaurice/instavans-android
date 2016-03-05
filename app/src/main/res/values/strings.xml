@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Portal</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="new_chat">New chat</string>
+    <string name="action_settings">Settings</string>
+
+</resources>

@@ -1,0 +1,29 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#fff">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_topline"
+        android:textColor="#fff"
+        android:gravity="center_horizontal"
+        android:background="@color/ColorPrimaryDark"
+        android:padding="3dp" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_cont"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/notificationsLV"
+            android:divider="#eee"
+            android:dividerHeight="1dp"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>

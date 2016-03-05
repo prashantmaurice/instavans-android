@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="com.maurice.grimreaper.grimreaper.Activities.Curate.SP1_SelectMessage"
+    android:id="@+id/cont"
+    android:orientation="vertical"
+    android:padding="2dp">
+
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView"
+        android:divider="#ccc"
+        android:dividerHeight="1dip"
+        android:layout_weight="1" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:id="@+id/btn_yes"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>

@@ -1,0 +1,20 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/login_wallpaper">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_cont"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/notificationsLV"
+            android:divider="#eee"
+            android:dividerHeight="1dp"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>
