@@ -17,8 +17,12 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.tinystep.honeybee.honeybee.Models.JobObj;
 import com.tinystep.honeybee.honeybee.R;
 import com.tinystep.honeybee.honeybee.Utils.Logg;
@@ -49,8 +53,34 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setOffscreenPageLimit(4);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
+            @Override
+            public void onPageSelected(int position) {
+                JobObj offer = data.offers.get(position);
+                scrollToJob(offer);
+            }
 
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
+
+        recreateMarkers();
+    }
+
+    private void recreateMarkers(){
+        mMap.clear();
+        for(JobObj offer : data.offers){
+            mMap.addMarker(new MarkerOptions().position(new LatLng(offer.lat, offer.longg)).title("Marker").snippet("Snippet"));
+        }
+    }
+
+    private void scrollToJob(JobObj offer){
+        LatLng latLng = new LatLng(offer.lat, offer.longg);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+        mMap.animateCamera(cameraUpdate);
     }
 
 

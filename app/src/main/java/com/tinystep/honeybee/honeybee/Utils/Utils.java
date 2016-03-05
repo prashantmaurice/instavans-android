@@ -15,6 +15,9 @@ import android.text.Spanned;
 import android.text.style.TextAppearanceSpan;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 /**
@@ -81,5 +84,20 @@ public class Utils {
         TextAppearanceSpan highlightSpan = new TextAppearanceSpan(null, Typeface.BOLD, -1, blueColor, null);
         spannable.setSpan(highlightSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannable;
+    }
+
+    public static JSONArray encodeStringArray(ArrayList<String> arr){
+        JSONArray jsonArr = new JSONArray();
+        for(String str : arr){
+            jsonArr.put(str);
+        }
+        return jsonArr;
+    }
+    public static ArrayList<String> decodeStringArray(JSONArray jsonArr) throws JSONException {
+        ArrayList<String> arr = new ArrayList<>();
+        for(int i=0;i<jsonArr.length();i++){
+            arr.add(jsonArr.getString(i));
+        }
+        return arr;
     }
 }

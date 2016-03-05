@@ -3,10 +3,9 @@ package com.tinystep.honeybee.honeybee.Activities.Main;
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 
 import com.tinystep.honeybee.honeybee.Models.JobObj;
-import com.tinystep.honeybee.honeybee.R;
 import com.tinystep.honeybee.honeybee.Utils.Logg;
 import com.tinystep.honeybee.honeybee.Views.JobViewBuilder;
 
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by maurice on 10/06/15.
  */
-public class OffersFragAdapter extends ArrayAdapter<JobObj> {
+public class OffersFragAdapter extends BaseAdapter {
     String TAG = "OFFERSADAPTER";
     Activity mContext;
     private final ArrayList<JobObj> offers;
@@ -25,8 +24,18 @@ public class OffersFragAdapter extends ArrayAdapter<JobObj> {
         return offers.size();
     }
 
+    @Override
+    public Object getItem(int position) {
+        return offers.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
     public OffersFragAdapter(Activity context, ArrayList<JobObj> offers){
-        super(context, R.layout.smslist_list_item, offers);
+//        super(context, R.layout.smslist_list_item, offers);
         this.mContext = context;
         this.offers = offers;
 
@@ -49,4 +58,8 @@ public class OffersFragAdapter extends ArrayAdapter<JobObj> {
         return view;
     }
 
+    public void remove(int position) {
+        offers.remove(position);
+        //TODO : add in ignored lists
+    }
 }

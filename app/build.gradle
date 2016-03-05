@@ -25,5 +25,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:7.5.0'
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    compile 'com.hudomju:swipe-to-dismiss-undo:1.0'
 
 }

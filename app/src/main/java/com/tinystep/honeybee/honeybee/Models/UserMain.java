@@ -2,10 +2,13 @@ package com.tinystep.honeybee.honeybee.Models;
 
 import android.content.Context;
 
+import com.tinystep.honeybee.honeybee.Utils.Utils;
 import com.tinystep.honeybee.honeybee.storage.SharedPrefs;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * This contains all the User data excluding kids,
@@ -17,6 +20,7 @@ public class UserMain {
     public String name;
     public String userId;
     public double lat, longg;
+    ArrayList<String> ignoredJobs = new ArrayList<>();
     public String xmppPass;
     public String email;
     public String imageUrl;
@@ -53,10 +57,15 @@ public class UserMain {
             userId = (sPrefs.userData.has("userId"))?sPrefs.userData.getString("userId"):"";
             lat = (sPrefs.userData.has("lat"))?sPrefs.userData.getDouble("lat"):0;
             longg = (sPrefs.userData.has("longg"))?sPrefs.userData.getDouble("longg"):0;
+            ArrayList<String> ignoredJobs2 = (sPrefs.userData.has("ignoredJobs"))? Utils.decodeStringArray(sPrefs.userData.getJSONArray("ignoredJobs")) : new ArrayList<String>();
+            ignoredJobs.addAll(ignoredJobs2);
         } catch (JSONException e) {e.printStackTrace();}
     }
     public void saveUserDataLocally() {
         try {
+            if(ignoredJobs != null || ignoredJobs.size() == 0)
+                sPrefs.userData.put("ignoredJobs", Utils.encodeStringArray(ignoredJobs));
+
             sPrefs.userData.put("userId", userId);
             sPrefs.userData.put("phone", phone);
             sPrefs.userData.put("name", name);

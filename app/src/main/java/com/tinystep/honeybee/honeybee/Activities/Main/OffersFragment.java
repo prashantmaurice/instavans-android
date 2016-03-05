@@ -9,8 +9,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.hudomju.swipe.SwipeToDismissTouchListener;
+import com.hudomju.swipe.adapter.ListViewAdapter;
+import com.tinystep.honeybee.honeybee.Controllers.ToastMain;
 import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.Models.JobObj;
 import com.tinystep.honeybee.honeybee.R;
@@ -65,7 +70,41 @@ public class OffersFragment extends android.support.v4.app.Fragment {
             }
         });
         notifyDataSetChanged();
+
+
+        //Set swipe dismiss
+        setSwipeDismiss();
+
         return rootView;
+    }
+
+    private void setSwipeDismiss() {
+        final SwipeToDismissTouchListener<ListViewAdapter> touchListener =
+                new SwipeToDismissTouchListener<>(
+                        new ListViewAdapter(notificationsLV),
+                        new SwipeToDismissTouchListener.DismissCallbacks<ListViewAdapter>() {
+                            @Override
+                            public boolean canDismiss(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public void onDismiss(ListViewAdapter view, int position) {
+                                adapter.remove(position);
+                            }
+                        });
+        notificationsLV.setOnTouchListener(touchListener);
+        notificationsLV.setOnScrollListener((AbsListView.OnScrollListener) touchListener.makeScrollListener());
+        notificationsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (touchListener.existPendingDismisses()) {
+                    touchListener.undoPendingDismiss();
+                } else {
+                    ToastMain.showSmartToast(mActivity,"Position " + position,"");
+                }
+            }
+        });
     }
 
     public void completeRefresh(){
