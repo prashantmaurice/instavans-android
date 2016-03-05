@@ -6,17 +6,3 @@
 /build
 .idea
 *.iml
-app/app-release.apk
-app/src/main/res/values/strings_local
-app/src/main/res/values/strings_local.xml
-app/src/main/java/com/tinystep/app/utils/Settings_local.java
-circularImageView/build/intermediates/classes/debug/com/mikhaellopez/circularimageview/CircularImageView.class
-circularImageView/build/intermediates/incremental/mergeAssets/androidTest/debug/merger.xml
-circularImageView/build/intermediates/incremental/mergeAssets/debug/merger.xml
-circularImageView/build/intermediates/incremental/mergeResources/androidTest/debug/merger.xml
-circularImageView/build/intermediates/incremental/packageResources/debug/merger.xml
-circularImageView/build
-
-app/app-dev-debug.apk
-app/app-dev-release.apk
-app/app-prod-release.apk

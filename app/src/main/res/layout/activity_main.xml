@@ -37,7 +37,7 @@
                 android:id="@+id/btn_curate"
                 android:src="@android:drawable/ic_menu_upload_you_tube"
                 android:padding="5dp"
-                android:visibility="gone" />
+                android:visibility="visible" />
         </LinearLayout>
 
         <com.astuetz.PagerSlidingTabStrip

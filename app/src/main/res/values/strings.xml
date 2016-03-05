@@ -1,7 +1,16 @@
 <resources>
-    <string name="app_name">Portal</string>
+    <string name="app_name">HoneyBee</string>
+    <string name="title_activity_maps">Honey Bee</string>
+    <string name="local_ip">192.168.6.171:3000</string>
+    <string name="title_activity_login">Honey Bee</string>
+
     <string name="hello_world">Hello world!</string>
-    <string name="new_chat">New chat</string>
     <string name="action_settings">Settings</string>
 
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>

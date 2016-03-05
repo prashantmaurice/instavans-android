@@ -1,62 +1,29 @@
 apply plugin: 'com.android.application'
+
 android {
     compileSdkVersion 22
-    buildToolsVersion '22.0.0'
-
-
-    packagingOptions {
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/DEPENDENCIES'
-    }
-
-    productFlavors {
-        // Define separate dev and prod product flavors.
-        dev {
-            // dev utilizes minSDKVersion = 21 to allow the Android gradle plugin
-            // to pre-dex each module and produce an APK that can be tested on
-            // Android Lollipop without time consuming dex merging processes.
-            minSdkVersion 21
-        }
-        prod {
-            // The actual minSdkVersion for the application.
-            minSdkVersion 16
-        }
-    }
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.maurice.instavans"
-//        minSdkVersion 16
+        applicationId "com.tinystep.honeybee.honeybee"
+        minSdkVersion 15
         targetSdkVersion 22
-        versionCode 42
-        versionName "0.4.8.2"
-        multiDexEnabled true
-
+        versionCode 1
+        versionName "1.0"
     }
     buildTypes {
-
-
         release {
-//            minifyEnabled true//Todo : this was disabled for generate signed APk to work with dex, solve it later
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.1'
-    compile files('src/main/libs/uil-1.9.3.jar')
     compile 'com.google.android.gms:play-services:7.5.0'
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
-    compile 'com.github.ksoichiro:android-observablescrollview:1.5.0'
-    compile 'com.github.nkzawa:socket.io-client:0.3.0'
-}
 
-repositories {
-    mavenLocal()
-    maven {
-        url 'https://oss.sonatype.org/content/repositories/snapshots'
-    }
-    mavenCentral()
 }
