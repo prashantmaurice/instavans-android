@@ -22,19 +22,7 @@ public class UserMain {
     public double lat, longg;
     ArrayList<String> ignoredJobs = new ArrayList<>();
     public ArrayList<String> shownJobs = new ArrayList<>();
-    public String xmppPass;
-    public String email;
-    public String imageUrl;
-    public String gcmId;
-    public String facebookId;
     public String phone;
-    public String address;
-    public String coverPic;
-    public Boolean isDoctor = false;
-    public String userType; //can takes values "parent","doctor","none"
-    public Boolean isMale = false;
-    public String token;
-    public String authProvider;
 
 
     private UserMain(Context context) {
@@ -103,6 +91,16 @@ public class UserMain {
 
     public boolean loggedIn() {
         if(userId!=null&&!userId.isEmpty()) return true;
+        return false;
+    }
+
+    public void addIgnored(JobObj msg) {
+        ignoredJobs.add(msg.jobId);
+        saveUserDataLocally();
+    }
+
+    public boolean isJobIgnored(String jobId) {
+        for(String id : ignoredJobs) if(id.equals(jobId)) return true;
         return false;
     }
 }

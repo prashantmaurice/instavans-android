@@ -126,7 +126,12 @@ public class OffersFragment extends android.support.v4.app.Fragment {
 
     public void notifyDataSetChanged() {
         allSMSDirectories.clear();
-        allSMSDirectories.addAll(MainApplication.getInstance().data.offers);
+//        allSMSDirectories.addAll(MainApplication.getInstance().data.offers);
+        for(JobObj job: MainApplication.getInstance().data.done){
+            if(!data.userMain.isJobIgnored(job.jobId)){
+                allSMSDirectories.add(job);
+            }
+        }
         adapter.notifyDataSetChanged();
     }
 

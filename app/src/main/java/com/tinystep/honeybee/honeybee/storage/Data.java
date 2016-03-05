@@ -50,6 +50,19 @@ public class Data {
         pullOffersFromServer(null);
         pullCompletedFromServer(null);
     }
+    public void completePullFromServer(final NetworkCallback callback) {
+        pullOffersFromServer(new NetworkCallback() {
+            @Override
+            public void onSuccess() {
+                pullCompletedFromServer(callback);
+            }
+
+            @Override
+            public void onError() {
+                callback.onError();
+            }
+        });
+    }
 
     //use this to retreive an instance of Data
     public static Data getInstance(Context context) {
@@ -199,5 +212,9 @@ public class Data {
         userMain.shownJobs.clear();
         userMain.shownJobs.addAll(ids);
         userMain.saveUserDataLocally();
+    }
+
+    public void ignoreOffer(JobObj msg) {
+        userMain.addIgnored(msg);
     }
 }

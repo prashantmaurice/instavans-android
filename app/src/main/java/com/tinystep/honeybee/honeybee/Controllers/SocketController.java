@@ -5,7 +5,9 @@ import android.content.Context;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.Utils.Logg;
+import com.tinystep.honeybee.honeybee.Utils.NetworkCallback;
 import com.tinystep.honeybee.honeybee.Utils.Utils;
 
 import org.json.JSONException;
@@ -104,7 +106,16 @@ public class SocketController {
             @Override
             public void call(Object... args) {
                 Logg.d(TAG, "Socket : requestCreate");
-                NotificationController.getInstance(mContext).updateOfferNotification();
+                MainApplication.getInstance().data.completePullFromServer(new NetworkCallback() {
+                    @Override
+                    public void onSuccess() {
+                        NotificationController.getInstance(mContext).updateOfferNotification();
+                    }
+
+                    @Override
+                    public void onError() {
+                    }
+                });
 //                JSONObject data = (JSONObject) args[0];
 //                JSONObject obj = new JSONObject(data);
 //                try {

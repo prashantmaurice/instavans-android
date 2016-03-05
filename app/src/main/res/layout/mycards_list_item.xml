@@ -89,7 +89,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:text="Reject"
+                    android:text="Ignore"
                     android:id="@+id/btn_two"
                     android:layout_weight="1"
                     android:gravity="center"
