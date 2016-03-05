@@ -13,7 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class MapDataHandler {
     String TAG = "MapDataHandler";
     GoogleMap mMap;
-    Location mLastLocation;
+    public Location mLastLocation;
     FragmentActivity activity;
 
     public MapDataHandler(GoogleMap mMap, FragmentActivity activity){

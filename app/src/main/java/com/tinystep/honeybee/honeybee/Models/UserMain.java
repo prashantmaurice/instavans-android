@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tinystep.honeybee.honeybee.Utils.Utils;
 import com.tinystep.honeybee.honeybee.storage.SharedPrefs;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,7 +23,9 @@ public class UserMain {
     public double lat, longg;
     ArrayList<String> ignoredJobs = new ArrayList<>();
     public ArrayList<String> shownJobs = new ArrayList<>();
+    public ArrayList<TransitObj> transits = new ArrayList<>();
     public String phone;
+    private boolean trackStarted;
 
 
     private UserMain(Context context) {
@@ -50,10 +53,23 @@ public class UserMain {
             ignoredJobs.addAll(ignoredJobs2);
             ArrayList<String> shownJobs2 = (sPrefs.userData.has("shownJobs"))? Utils.decodeStringArray(sPrefs.userData.getJSONArray("shownJobs")) : new ArrayList<String>();
             shownJobs.addAll(shownJobs2);
+
+            ArrayList<TransitObj> transit = (sPrefs.userData.has("transits"))? TransitObj.decode(sPrefs.userData.getJSONArray("transits")) : new ArrayList<TransitObj>();
+            transits.addAll(transit);
+
         } catch (JSONException e) {e.printStackTrace();}
     }
     public void saveUserDataLocally() {
         try {
+            JSONArray arr = new JSONArray();
+            for(TransitObj obj : transits){
+                arr.put(obj.encode());
+            }
+            sPrefs.userData.put("transits", arr);
+
+
+
+
             if(ignoredJobs != null || ignoredJobs.size() == 0)
                 sPrefs.userData.put("ignoredJobs", Utils.encodeStringArray(ignoredJobs));
             if(shownJobs != null || shownJobs.size() == 0)
@@ -101,6 +117,24 @@ public class UserMain {
 
     public boolean isJobIgnored(String jobId) {
         for(String id : ignoredJobs) if(id.equals(jobId)) return true;
+        return false;
+    }
+
+
+    public boolean isTrackStarted(String jobId) {
+        for(TransitObj tr : transits){
+            if(tr.jobId.equals(jobId)){
+               return true;
+            }
+        }
+        return false;
+    }
+    public boolean isTrackFinished(String jobId) {
+        for(TransitObj tr : transits){
+            if(tr.jobId.equals(jobId)){
+                if(tr.ended>0) return true;
+            }
+        }
         return false;
     }
 }

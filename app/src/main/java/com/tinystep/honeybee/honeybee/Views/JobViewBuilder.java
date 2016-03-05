@@ -1,12 +1,14 @@
 package com.tinystep.honeybee.honeybee.Views;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tinystep.honeybee.honeybee.Activities.Drive.DriveActivity;
 import com.tinystep.honeybee.honeybee.Controllers.LocalBroadcastHandler;
 import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.Models.JobObj;
@@ -38,7 +40,8 @@ public class JobViewBuilder {
         public TextView tv_header, tv_subheader, tv_subheader2,tv_body,tv_cost;
         public ImageView iv_left;
         public TextView btn_one,btn_two,tv_acc_3,tv_acc_4;
-        public Context mContext;
+        public Activity mContext;
+        public LinearLayout left_cont;
         Data data;
 
         public ViewHolder(View view, Activity activity) {
@@ -49,6 +52,7 @@ public class JobViewBuilder {
             tv_subheader2 = (TextView) view.findViewById(R.id.tv_subheader2);
             btn_one = (TextView) view.findViewById(R.id.btn_one);
             btn_two = (TextView) view.findViewById(R.id.btn_two);
+            left_cont = (LinearLayout) view.findViewById(R.id.left_cont);
             data = MainApplication.getInstance().data;
         }
 
@@ -63,6 +67,52 @@ public class JobViewBuilder {
             String dateString = new SimpleDateFormat("dd LLL yyyy").format(new Date(msg.arrivalTime));
             String dateString2 = new SimpleDateFormat("dd LLL yyyy").format(new Date(msg.endTime));
             tv_subheader2.setText(dateString+" - "+dateString2);
+
+            long curr = System.currentTimeMillis();
+
+
+            if(msg.arrivalTime>curr){
+                //Future
+                btn_two.setText("Ignore");
+                btn_two.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        data.ignoreOffer(msg);
+                        LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.OFFERS_UPDATED);
+                    }
+                });
+
+
+                left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.future));
+            }else if(msg.endTime<curr){
+                //Past
+                btn_two.setText("View");
+                btn_two.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        data.ignoreOffer(msg);
+                        Intent intent = new Intent(mContext,DriveActivity.class);
+                        intent.putExtra("data",msg.encode().toString());
+                        mContext.startActivity(intent);
+//                        LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.OFFERS_UPDATED);
+                    }
+                });
+                left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.past));
+            }else{
+                //Current
+                btn_two.setText("Navigate");
+                btn_two.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mContext,DriveActivity.class);
+                        intent.putExtra("data",msg.encode().toString());
+                        mContext.startActivity(intent);
+//                        data.ignoreOffer(msg);
+//                        LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.OFFERS_UPDATED);
+                    }
+                });
+                left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.present));
+            }
 
             btn_one.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -82,13 +132,7 @@ public class JobViewBuilder {
                 }
             });
 
-            btn_two.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    data.ignoreOffer(msg);
-                    LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.OFFERS_UPDATED);
-                }
-            });
+
 
         }
 

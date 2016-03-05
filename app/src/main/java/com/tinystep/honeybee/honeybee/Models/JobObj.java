@@ -15,6 +15,7 @@ public class JobObj implements Comparable<JobObj> {
     public int cost = 1000;
     public int distance = 1000;
     public int portersRequired = 1;
+    public JSONObject raw;
 
     public JobObj() {}
 
@@ -22,18 +23,21 @@ public class JobObj implements Comparable<JobObj> {
     public static JobObj decode(JSONObject obj){
         JobObj re = new JobObj();
         try {
+            re.raw = obj;
             re.jobId = (obj.has("jobId")) ? obj.getString("jobId") : null;
             re.endTime = (obj.has("endTime")) ? obj.getLong("endTime") : 0;
             re.arrivalTime = (obj.has("arrivalTimestamp")) ? obj.getLong("arrivalTimestamp") : 0;
+            re.endTime = (obj.has("unloadCompleteTimestamp")) ? obj.getLong("unloadCompleteTimestamp") : 0;
+
             if(obj.has("location")){
                 JSONArray locarion = obj.getJSONArray("location");
                 if(locarion!=null){
                     if(locarion.get(0) instanceof Integer){
-                        re.lat = (double) locarion.getInt(0);
-                        re.longg = (double) locarion.getInt(1);
+                        re.lat = (double) locarion.getInt(1);
+                        re.longg = (double) locarion.getInt(0);
                     }else{
-                        re.lat = locarion.getDouble(0);
-                        re.longg = locarion.getDouble(1);
+                        re.lat = locarion.getDouble(1);
+                        re.longg = locarion.getDouble(0);
                     }
                 }
             }
@@ -58,19 +62,20 @@ public class JobObj implements Comparable<JobObj> {
     }
 
     public JSONObject encode(){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put( "jobId", jobId );
-            jsonObject.put( "arrivalTime", arrivalTime );
-            jsonObject.put( "endTime", endTime );
-            jsonObject.put( "lat", lat );
-            jsonObject.put( "longg", longg );
-            jsonObject.put( "cost", cost );
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject;
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put( "jobId", jobId );
+//            jsonObject.put( "arrivalTime", arrivalTime );
+//            jsonObject.put( "endTime", endTime );
+//            jsonObject.put( "lat", lat );
+//            jsonObject.put( "longg", longg );
+//            jsonObject.put( "cost", cost );
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+        return raw;
+//        return jsonObject;
     }
 
     @Override

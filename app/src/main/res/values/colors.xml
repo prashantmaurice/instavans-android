@@ -6,5 +6,9 @@
     <color name="ColorPrimaryLight">#ffB2DFDB</color>
     <color name="ColorSecondary">#ffE65100</color>
 
+
+    <color name="past">#ffE65100</color>
+    <color name="present">#e6ad00</color>
+    <color name="future">#ff009688</color>
 </resources>
 

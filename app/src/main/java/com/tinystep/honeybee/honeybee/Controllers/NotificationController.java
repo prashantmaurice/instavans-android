@@ -71,8 +71,8 @@ public class NotificationController {
     //NOTIFICATION BASE HANDLERS
     public void showNotification( String title, String smallText, String bigText, int notificationId){
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
-                .setSmallIcon(R.drawable.ic_cast_dark)
-                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_cast_dark))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher))
                 .setContentTitle(title)
                 .setContentText(smallText)
 //                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))

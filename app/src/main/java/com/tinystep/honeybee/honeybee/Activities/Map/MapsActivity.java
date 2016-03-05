@@ -79,7 +79,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
     private void scrollToJob(JobObj offer){
         LatLng latLng = new LatLng(offer.lat, offer.longg);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(latLng);
         mMap.animateCamera(cameraUpdate);
     }
 
