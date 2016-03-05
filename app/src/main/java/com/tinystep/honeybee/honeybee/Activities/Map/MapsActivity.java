@@ -205,7 +205,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         public void inflateData(final JobObj msg){
             Logg.d(TAG, "Inflating data in Job view");
             tv_header.setText(""+msg.address);
-            tv_subheader.setText(""+msg.startTime);
+            tv_subheader.setText(""+msg.arrivalTime);
         }
 
         public void setData(JobObj data) {

@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 /**
  * This is basic builder for getting a question view which can be used to inflate Question in Forum, ProfileScreen etc
  */
-public class JobViewBuilder {
+public class LauncherIconViewBuilder {
     static final String TAG = "BANKCARDVIEW";
 
     public static View getJobCardView(Activity activity){

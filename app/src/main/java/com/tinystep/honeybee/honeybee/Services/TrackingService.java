@@ -15,6 +15,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.tinystep.honeybee.honeybee.Controllers.SocketController;
 import com.tinystep.honeybee.honeybee.Models.UserMain;
 
 import java.text.DateFormat;
@@ -29,6 +30,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     static TrackingService instance;
     NotificationManager mNM;
     int NOTIFICATION_ID = 112;
+    SocketController socketController;
     static String TAG = "SERVICE";
     UserMain userMain;
     LocationRequest mLocationRequest = new LocationRequest()
@@ -39,6 +41,11 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     public TrackingService() {
         instance = this;
         userMain = UserMain.getInstance(this);
+        establishConnection();
+    }
+    public void establishConnection(){
+        if(socketController==null) socketController = SocketController.getInstance(this);
+        socketController.connectIfNotConnected();
     }
 
     protected void startLocationUpdates() {

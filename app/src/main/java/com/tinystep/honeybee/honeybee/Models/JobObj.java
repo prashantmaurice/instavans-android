@@ -9,10 +9,12 @@ import java.util.ArrayList;
 public class JobObj implements Comparable<JobObj> {
 
     public String jobId = "";
-    public Long startTime = 1457286107000L,endTime = 1457386107000L;
+    public Long arrivalTime = 1457286107000L,endTime = 1457386107000L;
     public double lat,longg;
     public String address = "No address";
     public int cost = 1000;
+    public int distance = 1000;
+    public int portersRequired = 1;
 
     public JobObj() {}
 
@@ -21,12 +23,20 @@ public class JobObj implements Comparable<JobObj> {
         JobObj re = new JobObj();
         try {
             re.jobId = (obj.has("jobId")) ? obj.getString("jobId") : null;
-            re.startTime = (obj.has("startTime")) ? obj.getLong("startTime") : 0;
             re.endTime = (obj.has("endTime")) ? obj.getLong("endTime") : 0;
-            re.lat = (obj.has("lat")) ? obj.getLong("lat") : 0;
-            re.longg = (obj.has("longg")) ? obj.getLong("longg") : 0;
+            re.arrivalTime = (obj.has("arrivalTimestamp")) ? obj.getLong("arrivalTimestamp") : 0;
+            if(obj.has("location")){
+                JSONArray locarion = obj.getJSONArray("location");
+                if(locarion!=null){
+                    re.lat = (double) locarion.get(0);
+                    re.longg = (double) locarion.get(1);
+                }
+            }
+
             re.address = (obj.has("address")) ? obj.getString("address") : "No address";
             re.cost = (obj.has("cost")) ? obj.getInt("cost") : 0;
+            re.distance = (obj.has("distance")) ? obj.getInt("distance") : 0;
+            re.portersRequired = (obj.has("portersRequired")) ? obj.getInt("portersRequired") : 0;
         } catch (JSONException e) {e.printStackTrace();}
         return re;
     }
@@ -46,8 +56,10 @@ public class JobObj implements Comparable<JobObj> {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put( "jobId", jobId );
-            jsonObject.put( "startTime", startTime );
+            jsonObject.put( "arrivalTime", arrivalTime );
             jsonObject.put( "endTime", endTime );
+            jsonObject.put( "lat", lat );
+            jsonObject.put( "longg", longg );
             jsonObject.put( "cost", cost );
 
         } catch (JSONException e) {
