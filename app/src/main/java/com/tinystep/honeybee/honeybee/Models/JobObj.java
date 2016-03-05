@@ -28,12 +28,17 @@ public class JobObj implements Comparable<JobObj> {
             if(obj.has("location")){
                 JSONArray locarion = obj.getJSONArray("location");
                 if(locarion!=null){
-                    re.lat = (double) locarion.get(0);
-                    re.longg = (double) locarion.get(1);
+                    if(locarion.get(0) instanceof Integer){
+                        re.lat = (double) locarion.getInt(0);
+                        re.longg = (double) locarion.getInt(1);
+                    }else{
+                        re.lat = locarion.getDouble(0);
+                        re.longg = locarion.getDouble(1);
+                    }
                 }
             }
 
-            re.address = (obj.has("address")) ? obj.getString("address") : "No address";
+            re.address = (obj.has("locationText")) ? obj.getString("locationText") : "No address";
             re.cost = (obj.has("cost")) ? obj.getInt("cost") : 0;
             re.distance = (obj.has("distance")) ? obj.getInt("distance") : 0;
             re.portersRequired = (obj.has("portersRequired")) ? obj.getInt("portersRequired") : 0;

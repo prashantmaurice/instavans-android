@@ -66,7 +66,7 @@ public class LauncherIconViewBuilder {
             btn_one.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    data.acceptOffer(new NetworkCallback() {
+                    data.acceptOffer(msg, new NetworkCallback() {
                         @Override
                         public void onSuccess() {
 

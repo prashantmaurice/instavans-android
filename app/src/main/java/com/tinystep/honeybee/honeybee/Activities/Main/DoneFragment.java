@@ -27,20 +27,20 @@ import java.util.ArrayList;
 /**
  * This is the main fragment user for listing user Notifications
  */
-public class OffersFragment extends android.support.v4.app.Fragment {
+public class DoneFragment extends android.support.v4.app.Fragment {
 
     public MainActivity mActivity;
     ArrayList<JobObj> allSMSDirectories = new ArrayList<>();
     ListView notificationsLV;
     SwipeRefreshLayout refresh_cont;
-    OffersFragAdapter adapter;
+    DoneFragAdapter adapter;
     Data data;
 
-    public OffersFragment() {
+    public DoneFragment() {
     }
 
-    public static OffersFragment newInstance(MainActivity activityContext) {
-        OffersFragment myFragment = new OffersFragment();
+    public static DoneFragment newInstance(MainActivity activityContext) {
+        DoneFragment myFragment = new DoneFragment();
         myFragment.mActivity = activityContext;
         return myFragment;
     }
@@ -60,10 +60,9 @@ public class OffersFragment extends android.support.v4.app.Fragment {
         notificationsLV = (ListView) rootView.findViewById(R.id.notificationsLV);
 
         data = Data.getInstance(mActivity);
-        adapter = new OffersFragAdapter(getActivity(), allSMSDirectories);
+        adapter = new DoneFragAdapter(getActivity(), allSMSDirectories);
         notificationsLV.setAdapter(adapter);
         refresh_cont = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_cont);
-
         refresh_cont.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -109,7 +108,7 @@ public class OffersFragment extends android.support.v4.app.Fragment {
     }
 
     public void completeRefresh(){
-        data.pullOffersFromServer(new NetworkCallback() {
+        data.pullCompletedFromServer(new NetworkCallback() {
             @Override
             public void onSuccess() {
                 notifyDataSetChanged();
@@ -126,7 +125,7 @@ public class OffersFragment extends android.support.v4.app.Fragment {
 
     public void notifyDataSetChanged() {
         allSMSDirectories.clear();
-        allSMSDirectories.addAll(MainApplication.getInstance().data.offers);
+        allSMSDirectories.addAll(MainApplication.getInstance().data.done);
         adapter.notifyDataSetChanged();
     }
 

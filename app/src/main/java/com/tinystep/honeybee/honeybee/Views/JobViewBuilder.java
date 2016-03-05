@@ -56,7 +56,7 @@ public class JobViewBuilder {
 
         public void inflateData(final JobObj msg){
             Logg.d(TAG, "Inflating data in Job view");
-            tv_header.setText(msg.address);
+            tv_header.setText(msg.jobId+":"+msg.address);
             tv_subheader.setText(""+msg.arrivalTime);
 
             String dateString = new SimpleDateFormat("dd LLL yyyy").format(new Date(msg.arrivalTime));
@@ -66,9 +66,10 @@ public class JobViewBuilder {
             btn_one.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    data.acceptOffer(new NetworkCallback() {
+                    data.acceptOffer(msg,new NetworkCallback() {
                         @Override
                         public void onSuccess() {
+
 
                         }
 

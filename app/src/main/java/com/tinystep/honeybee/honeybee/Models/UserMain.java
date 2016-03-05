@@ -21,6 +21,7 @@ public class UserMain {
     public String userId;
     public double lat, longg;
     ArrayList<String> ignoredJobs = new ArrayList<>();
+    public ArrayList<String> shownJobs = new ArrayList<>();
     public String xmppPass;
     public String email;
     public String imageUrl;
@@ -59,12 +60,16 @@ public class UserMain {
             longg = (sPrefs.userData.has("longg"))?sPrefs.userData.getDouble("longg"):0;
             ArrayList<String> ignoredJobs2 = (sPrefs.userData.has("ignoredJobs"))? Utils.decodeStringArray(sPrefs.userData.getJSONArray("ignoredJobs")) : new ArrayList<String>();
             ignoredJobs.addAll(ignoredJobs2);
+            ArrayList<String> shownJobs2 = (sPrefs.userData.has("shownJobs"))? Utils.decodeStringArray(sPrefs.userData.getJSONArray("shownJobs")) : new ArrayList<String>();
+            shownJobs.addAll(shownJobs2);
         } catch (JSONException e) {e.printStackTrace();}
     }
     public void saveUserDataLocally() {
         try {
             if(ignoredJobs != null || ignoredJobs.size() == 0)
                 sPrefs.userData.put("ignoredJobs", Utils.encodeStringArray(ignoredJobs));
+            if(shownJobs != null || shownJobs.size() == 0)
+                sPrefs.userData.put("shownJobs", Utils.encodeStringArray(shownJobs));
 
             sPrefs.userData.put("userId", userId);
             sPrefs.userData.put("phone", phone);

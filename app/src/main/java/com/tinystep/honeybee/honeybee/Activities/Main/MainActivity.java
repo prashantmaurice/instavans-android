@@ -1,25 +1,31 @@
 package com.tinystep.honeybee.honeybee.Activities.Main;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.tinystep.honeybee.honeybee.Activities.Map.MapsActivity;
+import com.tinystep.honeybee.honeybee.Controllers.LocalBroadcastHandler;
 import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.R;
+import com.tinystep.honeybee.honeybee.Utils.Logg;
 import com.tinystep.honeybee.honeybee.storage.Data;
 
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-
+    String TAG = "MAINACTIVITY";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -68,6 +74,30 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(LocalBroadcastHandler.OFFERS_UPDATED));
+    }
+
+    // handler for received Intents from xmppservice
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Logg.d(TAG, "Refreshing each chats page ");
+            if(mSectionsPagerAdapter!=null){
+                mSectionsPagerAdapter.getDoneFrag().notifyDataSetChanged();
+                mSectionsPagerAdapter.getOffersFrag().notifyDataSetChanged();
+            }
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onPause();
+    }
+
     public Data getData() {
         return data;
     }
@@ -81,12 +111,12 @@ public class MainActivity extends AppCompatActivity {
 
         MainActivity mActivity;
         OffersFragment offersFragment;
-        OffersFragment doneFragment;
+        DoneFragment doneFragment;
         public SectionsPagerAdapter(FragmentManager fm, MainActivity activity) {
             super(fm);
             mActivity = activity;
             offersFragment = OffersFragment.newInstance(mActivity);
-            doneFragment = OffersFragment.newInstance(mActivity);
+            doneFragment = DoneFragment.newInstance(mActivity);
         }
 
         @Override
@@ -119,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         public OffersFragment getOffersFrag(){
             return offersFragment;
         }
-        public OffersFragment getDoneFrag(){
+        public DoneFragment getDoneFrag(){
             return doneFragment;
         }
     }

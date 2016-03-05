@@ -11,8 +11,6 @@ public class LocalBroadcastHandler {
 
     //Custom events that happens within the app
     public static String OFFERS_UPDATED = "OFEFRS_UPDATEDD";
-    public static String DONE_UPDATED = "DONE_UPDATEDD";
-    public static String MESSAGES_UPLOADED = "MESSAGES_UPLOADEDD";
 
     public static void sendBroadcast(Context context, String intentCode){
         Intent intent = new Intent(intentCode);

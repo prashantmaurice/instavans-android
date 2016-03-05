@@ -99,18 +99,20 @@ public class SocketController {
             public void call(Object... args) {
                 Logg.d(TAG, "Socket : EVENT_RECONNECTING");
             }
-        }).on("msg", new Emitter.Listener() {
+        }).on("requestCreate", new Emitter.Listener() {
 
             @Override
             public void call(Object... args) {
-                JSONObject data = (JSONObject) args[0];
+                Logg.d(TAG, "Socket : requestCreate");
+                NotificationController.getInstance(mContext).updateOfferNotification();
+//                JSONObject data = (JSONObject) args[0];
 //                JSONObject obj = new JSONObject(data);
 //                try {
 //                    handleIncomingXmppMessage(data);
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
 //                }
-                Logg.d(TAG, "Socket : msg : " + data.toString());
+//                Logg.d(TAG, "Socket : requestCreate : " + data.toString());
             }
         }).on("login", new Emitter.Listener() {
 
@@ -185,7 +187,7 @@ public class SocketController {
 //        opts.forceNew = true;
 //        opts.reconnection = true;
         Logg.e(TAG, "A Brand new Socked created : " + opts.query);
-        return IO.socket("http://192.168.6.171:4000",opts);
+        return IO.socket("http://192.168.6.171:4000/request",opts);
     }
 
     public void connectIfNotConnected(){

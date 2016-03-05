@@ -37,14 +37,11 @@ public class Data {
 
 
     public ArrayList<JobObj> offers = new ArrayList<>();
-    ArrayList<JobObj> done = new ArrayList<>();
+    public ArrayList<JobObj> done = new ArrayList<>();
 
     private Data(Context context) {
         mContext = context;
         userMain = UserMain.getInstance(context);
-        offers.add(new JobObj());
-        offers.add(new JobObj());
-        offers.add(new JobObj());
 
         completePullFromServer();
     }
@@ -70,6 +67,7 @@ public class Data {
         String url = Router.Jobs.offers();
         JSONObject jsonObject = new JSONObject();
         try {
+            jsonObject.put("userId",userMain.userId);
             jsonObject.put("lat",userMain.lat);
             jsonObject.put("long",userMain.longg);
             jsonObject.put("radius",1000000);
@@ -83,7 +81,6 @@ public class Data {
                 try {
                     JSONArray offersJSON = jsonObject.getJSONArray("result");
                     offers.clear();
-                    offers.add(new JobObj());
                     offers.addAll(JobObj.decode(offersJSON));
                     LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.OFFERS_UPDATED);
 
@@ -104,6 +101,9 @@ public class Data {
     public void pullCompletedFromServer(final NetworkCallback callback){
         String url = Router.Jobs.completed();
         JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("userId",userMain.userId);
+        } catch (JSONException e) {e.printStackTrace();}
         Logg.m("MAIN", "Pulling offers data from server : ");
 
         MainApplication.getInstance().addRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
@@ -114,8 +114,7 @@ public class Data {
                     JSONArray offersJSON = jsonObject.getJSONArray("result");
                     done.clear();
                     done.addAll(JobObj.decode(offersJSON));
-                    LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.DONE_UPDATED);
-
+                    LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.OFFERS_UPDATED);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -132,16 +131,30 @@ public class Data {
     }
 
     /** ACTIONS */
-    public void acceptOffer(final NetworkCallback callback){
+    public void acceptOffer(JobObj msg, final NetworkCallback callback){
         String url = Router.Jobs.accept();
         JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("jobId",msg.jobId);
+            jsonObject.put("userId",userMain.userId);
+        } catch (JSONException e) {e.printStackTrace();}
         Logg.m("MAIN", "Accept offers data from server : ");
 
         MainApplication.getInstance().addRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 Logg.d(TAG, "USER DATA : " + jsonObject.toString());
-                if(callback!=null) pullOffersFromServer(callback);
+                if(callback!=null) pullOffersFromServer(new NetworkCallback() {
+                    @Override
+                    public void onSuccess() {
+                        pullCompletedFromServer(callback);
+                    }
+
+                    @Override
+                    public void onError() {
+                        callback.onError();
+                    }
+                });
             }
         }, new Response.ErrorListener() {
             @Override
@@ -157,4 +170,34 @@ public class Data {
         userMain.saveUserDataLocally();
     }
 
+    public ArrayList<String> getOfferIds() {
+        ArrayList<String > arr = new ArrayList<>();
+        for(JobObj job : offers){
+            arr.add(job.jobId);
+        }
+        return arr;
+    }
+    public ArrayList<JobObj> getnewJobs(){
+        ArrayList<JobObj> unseenOffers = new ArrayList<>();
+
+//        userMain.shownJobs
+        for(JobObj job : offers){
+            boolean notShown = true;
+            for(String shownjobId : userMain.shownJobs){
+                if(job.jobId.equals(shownjobId)) notShown = false;
+            }
+            if(notShown) unseenOffers.add(job);
+        }
+        return unseenOffers;
+    }
+
+    public void setAllSeen() {
+        ArrayList<String> ids = new ArrayList<>();
+        for(JobObj job : offers){
+            ids.add(job.jobId);
+        }
+        userMain.shownJobs.clear();
+        userMain.shownJobs.addAll(ids);
+        userMain.saveUserDataLocally();
+    }
 }
