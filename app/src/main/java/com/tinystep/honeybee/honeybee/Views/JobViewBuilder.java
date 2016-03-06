@@ -82,7 +82,7 @@ public class JobViewBuilder {
                 });
 
             }else if(userMain.isTrackFinished(msg.jobId)){
-                long millis = System.currentTimeMillis()-userMain.getTransit(msg.jobId).started;
+                long millis = userMain.getTransit(msg.jobId).ended-userMain.getTransit(msg.jobId).started;
                 long minutes = millis/(1000*60);
                 tv_subheader.setText("finished transit in "+minutes+" minutes");
                 left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.past));

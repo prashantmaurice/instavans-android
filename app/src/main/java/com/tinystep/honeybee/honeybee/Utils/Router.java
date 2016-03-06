@@ -19,8 +19,11 @@ public class Router {
         public static String main(){
             return getNewDefaultBuilder().path("api").appendPath("user").build().toString();
         }
+        public static String data(){
+            return getNewDefaultBuilder().path("api").appendPath("user").appendPath("mydata").build().toString();
+        }
         public static String locationUpdate(){
-            return getNewDefaultBuilder().path("api").appendPath("user").build().toString();
+            return getNewDefaultBuilder().path("api").appendPath("user").appendPath("update").appendPath("location").build().toString();
         }
     }
 

@@ -99,13 +99,13 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
         try {
             jsonObject.put("lat",mCurrentLocation.getLatitude());
             jsonObject.put("userId",MainApplication.getInstance().data.userMain.userId);
-            jsonObject.put("lng",mCurrentLocation.getLongitude());
+            jsonObject.put("long",mCurrentLocation.getLongitude());
 
 
             MainApplication.getInstance().addRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject jsonObject) {
-                    Logg.d(TAG, "USER ATA : " + jsonObject.toString());
+                    Logg.d(TAG, "USER LOCATION UPDATE : " + jsonObject.toString());
                 }
             }, new Response.ErrorListener() {
                 @Override

@@ -130,9 +130,9 @@ public class DoneFragment extends android.support.v4.app.Fragment {
     public void notifyDataSetChanged() {
         allSMSDirectories.clear();
         allSMSDirectories.addAll(MainApplication.getInstance().data.done);
-        cont_noevents.setVisibility(allSMSDirectories.size()==0?View.VISIBLE:View.GONE);
+        if(cont_noevents!=null) cont_noevents.setVisibility(allSMSDirectories.size()==0?View.VISIBLE:View.GONE);
         sort();
-        adapter.notifyDataSetChanged();
+        if(adapter!=null)adapter.notifyDataSetChanged();
     }
 
     public void sort(){

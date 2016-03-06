@@ -116,12 +116,14 @@ public class MainActivity extends AppCompatActivity {
 
         MainActivity mActivity;
         OffersFragment offersFragment;
+        UserFragment userFragment;
         DoneFragment doneFragment;
         public SectionsPagerAdapter(FragmentManager fm, MainActivity activity) {
             super(fm);
             mActivity = activity;
             offersFragment = OffersFragment.newInstance(mActivity);
             doneFragment = DoneFragment.newInstance(mActivity);
+            userFragment = UserFragment.newInstance(mActivity);
         }
 
         @Override
@@ -131,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
             switch (position) {
                 case 0: return offersFragment;
                 case 1: return doneFragment;
+                case 2: return userFragment;
             }
             return offersFragment;
         }
@@ -138,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return 2;
+            return 3;
         }
 
         @Override
@@ -147,8 +150,9 @@ public class MainActivity extends AppCompatActivity {
             switch (position) {
                 case 0: return "Offers";
                 case 1: return "Done";
+                case 2: return "PROFILE";
             }
-            return null;
+            return "";
         }
 
         public OffersFragment getOffersFrag(){
@@ -156,6 +160,9 @@ public class MainActivity extends AppCompatActivity {
         }
         public DoneFragment getDoneFrag(){
             return doneFragment;
+        }
+        public UserFragment getUserFrag(){
+            return userFragment;
         }
     }
 

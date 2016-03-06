@@ -20,6 +20,7 @@ public class UserMain {
     private SharedPrefs sPrefs;
     public String name;
     public String userId;
+    public int score = 0;
     public double lat, longg;
     ArrayList<String> ignoredJobs = new ArrayList<>();
     public ArrayList<String> shownJobs = new ArrayList<>();
@@ -46,6 +47,7 @@ public class UserMain {
             name = (sPrefs.userData.has("name"))?sPrefs.userData.getString("name"):"";
             phone = (sPrefs.userData.has("phone"))?sPrefs.userData.getString("phone"):"";
             userId = (sPrefs.userData.has("userId"))?sPrefs.userData.getString("userId"):"";
+            score = (sPrefs.userData.has("score"))?sPrefs.userData.getInt("score"):0;
             lat = (sPrefs.userData.has("lat"))?sPrefs.userData.getDouble("lat"):0;
             longg = (sPrefs.userData.has("longg"))?sPrefs.userData.getDouble("longg"):0;
             ArrayList<String> ignoredJobs2 = (sPrefs.userData.has("ignoredJobs"))? Utils.decodeStringArray(sPrefs.userData.getJSONArray("ignoredJobs")) : new ArrayList<String>();
@@ -78,6 +80,7 @@ public class UserMain {
             sPrefs.userData.put("phone", phone);
             sPrefs.userData.put("name", name);
             sPrefs.userData.put("lat", lat);
+            sPrefs.userData.put("score", score);
             sPrefs.userData.put("longg", longg);
         } catch (JSONException e) {e.printStackTrace();}
         sPrefs.saveUserData();

@@ -76,12 +76,12 @@ public class DriveActivity extends FragmentActivity implements GoogleApiClient.C
                 startActivity(mapIntent);
             }
         });
+        data = Data.getInstance(this);
 
         refreshButtons();
 
         buildGoogleApiClient();
         setUpMapIfNeeded();
-        data = Data.getInstance(this);
 
 
 

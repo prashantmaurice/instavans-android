@@ -136,16 +136,16 @@ public class OffersFragment extends android.support.v4.app.Fragment {
                 allSMSDirectories.add(job);
             }
         }
-        cont_noevents.setVisibility(allSMSDirectories.size()==0?View.VISIBLE:View.GONE);
-        sort();
-        adapter.notifyDataSetChanged();
+        if(cont_noevents!=null)cont_noevents.setVisibility(allSMSDirectories.size()==0?View.VISIBLE:View.GONE);
+//        sort();
+        if(adapter!=null) adapter.notifyDataSetChanged();
     }
 
     public void sort(){
         Collections.sort(allSMSDirectories, new Comparator<JobObj>() {
             @Override
             public int compare(JobObj s1, JobObj s2) {
-                return -s1.arrivalTime.compareTo(s2.arrivalTime);
+                return s1.arrivalTime.compareTo(s2.arrivalTime);
             }
         });
     }
