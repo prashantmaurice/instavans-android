@@ -23,6 +23,7 @@ public class UserMain {
     public int score = 0;
     public double lat, longg;
     ArrayList<String> ignoredJobs = new ArrayList<>();
+    ArrayList<String> shownNotifications = new ArrayList<>();
     public ArrayList<String> shownJobs = new ArrayList<>();
     public ArrayList<TransitObj> transits = new ArrayList<>();
     public String phone;
@@ -54,6 +55,8 @@ public class UserMain {
             ignoredJobs.addAll(ignoredJobs2);
             ArrayList<String> shownJobs2 = (sPrefs.userData.has("shownJobs"))? Utils.decodeStringArray(sPrefs.userData.getJSONArray("shownJobs")) : new ArrayList<String>();
             shownJobs.addAll(shownJobs2);
+            ArrayList<String> shownNotificationsS = (sPrefs.userData.has("shownNotifications"))? Utils.decodeStringArray(sPrefs.userData.getJSONArray("shownNotifications")) : new ArrayList<String>();
+            shownNotifications.addAll(shownNotificationsS);
 
             ArrayList<TransitObj> transit = (sPrefs.userData.has("transits"))? TransitObj.decode(sPrefs.userData.getJSONArray("transits")) : new ArrayList<TransitObj>();
             transits.addAll(transit);
@@ -75,6 +78,8 @@ public class UserMain {
                 sPrefs.userData.put("ignoredJobs", Utils.encodeStringArray(ignoredJobs));
             if(shownJobs != null || shownJobs.size() == 0)
                 sPrefs.userData.put("shownJobs", Utils.encodeStringArray(shownJobs));
+            if(shownNotifications != null || shownNotifications.size() == 0)
+                sPrefs.userData.put("shownNotifications", Utils.encodeStringArray(shownNotifications));
 
             sPrefs.userData.put("userId", userId);
             sPrefs.userData.put("phone", phone);
@@ -115,6 +120,15 @@ public class UserMain {
     public void addIgnored(JobObj msg) {
         ignoredJobs.add(msg.jobId);
         saveUserDataLocally();
+    }
+
+    public void addInShownNOtification(String jobId){
+        shownNotifications.add(jobId);
+        saveUserDataLocally();
+    }
+    public boolean isJobNotificationShown(String jobId) {
+        for(String id : shownNotifications) if(id.equals(jobId)) return true;
+        return false;
     }
 
     public boolean isJobIgnored(String jobId) {

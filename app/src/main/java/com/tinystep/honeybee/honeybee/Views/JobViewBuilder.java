@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tinystep.honeybee.honeybee.Activities.Drive.DriveActivity;
 import com.tinystep.honeybee.honeybee.Controllers.LocalBroadcastHandler;
+import com.tinystep.honeybee.honeybee.Controllers.ToastMain;
 import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.Models.JobObj;
 import com.tinystep.honeybee.honeybee.Models.UserMain;
@@ -40,7 +41,7 @@ public class JobViewBuilder {
         public View mainView;
         public TextView tv_header, tv_subheader, tv_subheader2,tv_body,tv_cost;
         public ImageView iv_left;
-        public TextView btn_one,btn_two,tv_acc_3,tv_acc_4;
+        public TextView btn_one,btn_two,tv_right,tv_subheader3;
         public Activity mContext;
         public LinearLayout left_cont;
         Data data;
@@ -51,6 +52,8 @@ public class JobViewBuilder {
             tv_header = (TextView) view.findViewById(R.id.tv_header);
             tv_subheader = (TextView) view.findViewById(R.id.tv_subheader);
             tv_subheader2 = (TextView) view.findViewById(R.id.tv_subheader2);
+            tv_subheader3 = (TextView) view.findViewById(R.id.tv_subheader3);
+            tv_right= (TextView) view.findViewById(R.id.tv_right);
             btn_one = (TextView) view.findViewById(R.id.btn_one);
             btn_two = (TextView) view.findViewById(R.id.btn_two);
             left_cont = (LinearLayout) view.findViewById(R.id.left_cont);
@@ -60,17 +63,23 @@ public class JobViewBuilder {
 
         // TODO - WTF! UserActivityObject and ActivityObject classes?! use ONE dude!
 
+        private static double round (double value, int precision) {
+            int scale = (int) Math.pow(10, precision);
+            return (double) Math.round(value * scale) / scale;
+        }
+
         public void inflateData(final JobObj msg){
             Logg.d(TAG, "Inflating data in Job view");
-            tv_header.setText(msg.jobId+":"+msg.address);
-
+            tv_header.setText("["+msg.getCreator()+":"+msg.jobId+"]"+msg.address);
             final UserMain userMain = MainApplication.getInstance().data.userMain;
+            tv_right.setText("("+round(Data.distFrom((float) userMain.lat, (float) userMain.longg, (float) msg.lat, (float) msg.longg)/1000,1)+"km)");
+            tv_subheader3.setText("Rs."+msg.cost);
             if(userMain.isInTransit(msg.jobId)){
 
                 //GOING ON
                 long millis = System.currentTimeMillis()-userMain.getTransit(msg.jobId).started;
                 long minutes = millis/(1000*60);
-                tv_subheader.setText(minutes+" minutes In Transit");
+                tv_subheader.setText(getTime(minutes)+" in Transit");
                 left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.present));
 
                 btn_two.setText("Finish");
@@ -88,7 +97,7 @@ public class JobViewBuilder {
                 //FINISHED
                 long millis = userMain.getTransit(msg.jobId).ended-userMain.getTransit(msg.jobId).started;
                 long minutes = millis/(1000*60);
-                tv_subheader.setText("finished transit in "+minutes+" minutes");
+                tv_subheader.setText("finished transit in "+getTime(minutes));
                 left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.past));
 
                 btn_two.setText("View");
@@ -127,7 +136,7 @@ public class JobViewBuilder {
                 }else{
 
                     //UPCMING
-                    tv_subheader.setText("Will start in "+minutes+" minutes");
+                    tv_subheader.setText("Will start in "+getTime(minutes));
                     left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.future));
 
 
@@ -171,13 +180,12 @@ public class JobViewBuilder {
                     data.acceptOffer(msg,new NetworkCallback() {
                         @Override
                         public void onSuccess() {
-
-
+                            ToastMain.showSmartToast(mContext,null,"Successfully accepted");
                         }
 
                         @Override
                         public void onError() {
-
+                            ToastMain.showSmartToast(mContext,null,"Some error has occurred");
                         }
                     });
                 }
@@ -188,5 +196,11 @@ public class JobViewBuilder {
         }
 
 
+    }
+
+    static String getTime(long minutes){
+        if(minutes<60) return minutes+" minutes";
+        if(minutes<60*24) return ViewHolder.round(minutes/60,1)+" hrs";
+        return ViewHolder.round(minutes/(60*24),0)+" days";
     }
 }

@@ -1,5 +1,8 @@
 package com.tinystep.honeybee.honeybee.Models;
 
+import com.tinystep.honeybee.honeybee.MainApplication;
+import com.tinystep.honeybee.honeybee.storage.Data;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +17,7 @@ public class JobObj implements Comparable<JobObj> {
     public String address = "No address";
     public int cost = 1000;
     public int distance = 1000;
+    public int creator = 1;
     public int portersRequired = 1;
     public JSONObject raw;
 
@@ -43,8 +47,9 @@ public class JobObj implements Comparable<JobObj> {
             }
 
             re.address = (obj.has("locationText")) ? obj.getString("locationText") : "No address";
-            re.cost = (obj.has("cost")) ? obj.getInt("cost") : 0;
+            re.cost = (obj.has("amountOffered")) ? obj.getInt("amountOffered") : 0;
             re.distance = (obj.has("distance")) ? obj.getInt("distance") : 0;
+            re.creator = (obj.has("creator")) ? obj.getInt("creator") : 1;
             re.portersRequired = (obj.has("portersRequired")) ? obj.getInt("portersRequired") : 0;
         } catch (JSONException e) {e.printStackTrace();}
         return re;
@@ -61,6 +66,12 @@ public class JobObj implements Comparable<JobObj> {
         return list;
     }
 
+    public float getDistance(){
+        UserMain userMain = MainApplication.getInstance().data.userMain;
+        return Data.distFrom((float)userMain.lat,(float)userMain.longg,(float)lat,(float)longg);
+    }
+
+
     public JSONObject encode(){
 //        JSONObject jsonObject = new JSONObject();
 //        try {
@@ -76,6 +87,11 @@ public class JobObj implements Comparable<JobObj> {
 //        }
         return raw;
 //        return jsonObject;
+    }
+
+
+    public String getCreator(){
+        return "Shipper"+creator   ;
     }
 
     @Override

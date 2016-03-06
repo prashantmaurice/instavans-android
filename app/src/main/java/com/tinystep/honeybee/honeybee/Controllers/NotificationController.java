@@ -12,6 +12,7 @@ import android.support.v4.app.NotificationCompat;
 import com.tinystep.honeybee.honeybee.Activities.Login.LoginActivity;
 import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.Models.JobObj;
+import com.tinystep.honeybee.honeybee.Models.UserMain;
 import com.tinystep.honeybee.honeybee.R;
 import com.tinystep.honeybee.honeybee.Utils.Logg;
 import com.tinystep.honeybee.honeybee.storage.Data;
@@ -67,6 +68,25 @@ public class NotificationController {
         data.setAllSeen();
     }
 
+    public void checkForAlarms(){
+        UserMain userMain = MainApplication.getInstance().data.userMain;
+        ArrayList<JobObj> newjobs = data.done;
+        for(JobObj obj : newjobs){
+
+            long minutes = (obj.arrivalTime-System.currentTimeMillis())/(60*1000);
+            if(minutes<5 && obj.getDistance()/minutes > 7){
+                if(!userMain.isJobNotificationShown(obj.jobId)){
+                    userMain.addInShownNOtification(obj.jobId);
+                    showNotification("You need to start moving",""+obj.address,"",FORUM_NOTIFICATION);
+                    return;
+                }
+            }
+        }
+
+
+
+    }
+
 
     //NOTIFICATION BASE HANDLERS
     public void showNotification( String title, String smallText, String bigText, int notificationId){
@@ -108,5 +128,7 @@ public class NotificationController {
         mNotifyMgr.notify(notificationId, notification);
 
     }
+
+
 
 }

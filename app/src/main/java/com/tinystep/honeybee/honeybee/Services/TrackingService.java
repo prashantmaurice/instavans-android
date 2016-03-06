@@ -18,6 +18,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.tinystep.honeybee.honeybee.Controllers.NotificationController;
 import com.tinystep.honeybee.honeybee.Controllers.SocketController;
 import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.Models.UserMain;
@@ -90,6 +91,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
         userMain.setLocation(location.getLatitude(),location.getLongitude());
         Log.d(TAG,"LOCATION UPDATE"+mCurrentLocation.toString());
         dumpDataInServer();
+        NotificationController.getInstance(this).checkForAlarms();
     }
 
     private void dumpDataInServer() {

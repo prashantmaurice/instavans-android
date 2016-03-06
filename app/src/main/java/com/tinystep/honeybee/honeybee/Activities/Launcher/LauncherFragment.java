@@ -46,6 +46,7 @@ public class LauncherFragment extends android.support.v4.app.Fragment {
     public static LauncherFragment newInstance(LauncherActivity activityContext) {
         LauncherFragment myFragment = new LauncherFragment();
         myFragment.mActivity = activityContext;
+        myFragment.data = Data.getInstance(activityContext);
         return myFragment;
     }
 
@@ -64,7 +65,7 @@ public class LauncherFragment extends android.support.v4.app.Fragment {
         notificationsLV = (ListView) rootView.findViewById(R.id.notificationsLV);
 
         cont_noevents = rootView.findViewById(R.id.cont_noevents);
-        data = Data.getInstance(mActivity);
+
         adapter = new OffersFragAdapter(getActivity(), allSMSDirectories);
         notificationsLV.setAdapter(adapter);
         refresh_cont = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_cont);
