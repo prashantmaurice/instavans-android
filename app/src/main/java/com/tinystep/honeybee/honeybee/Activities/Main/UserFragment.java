@@ -61,7 +61,7 @@ public class UserFragment extends android.support.v4.app.Fragment {
     private void refreshUI() {
         UserMain userMain = MainApplication.getInstance().data.userMain;
         tv_name.setText(""+userMain.name);
-        tv_score.setText(""+userMain.score);
+        tv_score.setText("You have a total of "+userMain.score+" rs since you joined us");
 
     }
 

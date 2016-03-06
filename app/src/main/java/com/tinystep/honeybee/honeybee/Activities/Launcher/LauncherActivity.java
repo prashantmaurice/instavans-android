@@ -1,4 +1,4 @@
-package com.tinystep.honeybee.honeybee.Activities.Main;
+package com.tinystep.honeybee.honeybee.Activities.Launcher;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +15,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.tinystep.honeybee.honeybee.Activities.Main.DoneFragment;
+import com.tinystep.honeybee.honeybee.Activities.Main.OffersFragment;
+import com.tinystep.honeybee.honeybee.Activities.Main.UserFragment;
 import com.tinystep.honeybee.honeybee.Activities.Map.MapsActivity;
 import com.tinystep.honeybee.honeybee.Controllers.LocalBroadcastHandler;
 import com.tinystep.honeybee.honeybee.MainApplication;
@@ -24,7 +27,7 @@ import com.tinystep.honeybee.honeybee.storage.Data;
 
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class LauncherActivity extends AppCompatActivity {
     String TAG = "MAINACTIVITY";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         btn_curate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,MapsActivity.class);
+                Intent intent = new Intent(LauncherActivity.this,MapsActivity.class);
                 startActivityForResult(intent,200);
             }
         });
@@ -116,11 +119,11 @@ public class MainActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        MainActivity mActivity;
+        LauncherActivity mActivity;
         OffersFragment offersFragment;
         UserFragment userFragment;
         DoneFragment doneFragment;
-        public SectionsPagerAdapter(FragmentManager fm, MainActivity activity) {
+        public SectionsPagerAdapter(FragmentManager fm, LauncherActivity activity) {
             super(fm);
             mActivity = activity;
             offersFragment = OffersFragment.newInstance(mActivity);
