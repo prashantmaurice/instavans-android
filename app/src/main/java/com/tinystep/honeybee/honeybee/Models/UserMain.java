@@ -176,4 +176,12 @@ public class UserMain {
         }
         return null;
     }
+
+    public void logout() {
+        userId = "";
+        name = "";
+        ignoredJobs = new ArrayList<>();
+        transits = new ArrayList<>();
+        saveUserDataLocally();
+    }
 }

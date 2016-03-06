@@ -1,7 +1,10 @@
-package com.tinystep.honeybee.honeybee.Activities.Main;
+package com.tinystep.honeybee.honeybee.Activities.Launcher;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,10 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ListView;
 
 import com.hudomju.swipe.SwipeToDismissTouchListener;
 import com.hudomju.swipe.adapter.ListViewAdapter;
+import com.tinystep.honeybee.honeybee.Activities.Login.LoginActivity;
+import com.tinystep.honeybee.honeybee.Activities.Main.OffersFragAdapter;
 import com.tinystep.honeybee.honeybee.Controllers.ToastMain;
 import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.Models.JobObj;
@@ -25,13 +31,14 @@ import com.tinystep.honeybee.honeybee.storage.Data;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * This is the main fragment user for listing user Notifications
  */
-public class OffersFragment extends android.support.v4.app.Fragment {
+public class GridFragment extends android.support.v4.app.Fragment {
 
-    public MainActivity mActivity;
+    public LauncherActivity mActivity;
     ArrayList<JobObj> allSMSDirectories = new ArrayList<>();
     ListView notificationsLV;
     SwipeRefreshLayout refresh_cont;
@@ -39,13 +46,12 @@ public class OffersFragment extends android.support.v4.app.Fragment {
     View cont_noevents;
     Data data;
 
-    public OffersFragment() {
+    public GridFragment() {
     }
 
-    public static OffersFragment newInstance(MainActivity activityContext) {
-        OffersFragment myFragment = new OffersFragment();
+    public static GridFragment newInstance(LauncherActivity activityContext) {
+        GridFragment myFragment = new GridFragment();
         myFragment.mActivity = activityContext;
-        myFragment.data = Data.getInstance(activityContext);
         return myFragment;
     }
 
@@ -59,29 +65,54 @@ public class OffersFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView;
-        rootView = inflater.inflate(R.layout.fragment_notifications, null);
+        rootView = inflater.inflate(R.layout.fragment_grid, null);
 
-        notificationsLV = (ListView) rootView.findViewById(R.id.notificationsLV);
+        //Data
+        final ArrayList<GridObj> res = new ArrayList<>();
 
-        cont_noevents = rootView.findViewById(R.id.cont_noevents);
 
-        adapter = new OffersFragAdapter(getActivity(), allSMSDirectories);
-        notificationsLV.setAdapter(adapter);
-        refresh_cont = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_cont);
+        List<PackageInfo> packs = mActivity.getPackageManager().getInstalledPackages(0);
+        for(int i=0;i<packs.size();i++) {
+            PackageInfo p = packs.get(i);
+            if(isSystemPackage(p)) continue;
+            GridObj newInfo = new GridObj();
+            newInfo.name = p.applicationInfo.loadLabel(mActivity.getPackageManager()).toString();
+            newInfo.packageName = p.packageName;
+            newInfo.icon = p.applicationInfo.loadIcon(mActivity.getPackageManager());
+            res.add(newInfo);
+        }
 
-        refresh_cont.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                completeRefresh();
+
+
+        GridView gridView = (GridView) rootView.findViewById(R.id.gridView1);
+
+        // Set custom adapter (GridAdapter) to gridview
+
+        gridView.setAdapter(  new GridFragAdapter(mActivity,res) );
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+
+                if(res.get(position).packageName.equals("com.tinystep.honeybee.honeybee")){
+                    Intent launchIntent = new Intent(mActivity, LoginActivity.class);
+                    launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mActivity.startActivity(launchIntent);
+                }else{
+                    Intent launchIntent = mActivity.getPackageManager().getLaunchIntentForPackage(res.get(position).packageName);
+                    mActivity.startActivity(launchIntent);
+                }
+
             }
         });
-        notifyDataSetChanged();
 
-
-        //Set swipe dismiss
-        setSwipeDismiss();
 
         return rootView;
+    }
+
+    private boolean isSystemPackage(PackageInfo pkgInfo) {
+        return ((pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) ? true
+                : false;
     }
 
     private void setSwipeDismiss() {
@@ -174,7 +205,13 @@ public class OffersFragment extends android.support.v4.app.Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.mActivity = (MainActivity) activity;
+        this.mActivity = (LauncherActivity) activity;
+    }
+
+    public class GridObj{
+        public String name;
+        public String packageName;
+        public Drawable icon;
     }
 
 }

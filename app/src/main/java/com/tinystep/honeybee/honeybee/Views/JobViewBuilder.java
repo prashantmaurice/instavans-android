@@ -66,6 +66,8 @@ public class JobViewBuilder {
 
             final UserMain userMain = MainApplication.getInstance().data.userMain;
             if(userMain.isInTransit(msg.jobId)){
+
+                //GOING ON
                 long millis = System.currentTimeMillis()-userMain.getTransit(msg.jobId).started;
                 long minutes = millis/(1000*60);
                 tv_subheader.setText(minutes+" minutes In Transit");
@@ -82,6 +84,8 @@ public class JobViewBuilder {
                 });
 
             }else if(userMain.isTrackFinished(msg.jobId)){
+
+                //FINISHED
                 long millis = userMain.getTransit(msg.jobId).ended-userMain.getTransit(msg.jobId).started;
                 long minutes = millis/(1000*60);
                 tv_subheader.setText("finished transit in "+minutes+" minutes");
@@ -103,6 +107,8 @@ public class JobViewBuilder {
                 long millis = msg.arrivalTime-System.currentTimeMillis();
                 long minutes = millis/(1000*60);
                 if(millis<0){
+                    //MISSED
+
                     tv_subheader.setText("you missed this");
                     left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.missed));
 
@@ -119,26 +125,43 @@ public class JobViewBuilder {
                     });
 
                 }else{
+
+                    //UPCMING
                     tv_subheader.setText("Will start in "+minutes+" minutes");
                     left_cont.setBackgroundColor(mContext.getResources().getColor(R.color.future));
 
-                    btn_two.setText("Navigate");
-                    btn_two.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(mContext,DriveActivity.class);
-                            intent.putExtra("data",msg.encode().toString());
-                            mContext.startActivity(intent);
-//                        data.ignoreOffer(msg);
-//                        LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.OFFERS_UPDATED);
-                        }
-                    });
+
+                    if(data.isAccepted(msg.jobId)){
+                        btn_two.setText("Navigate");
+                        btn_two.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                    Intent intent = new Intent(mContext,DriveActivity.class);
+                                    intent.putExtra("data",msg.encode().toString());
+                                    mContext.startActivity(intent);
+//                                data.ignoreOffer(msg);
+//                                LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.OFFERS_UPDATED);
+                            }
+                        });
+                    }else{
+                        btn_two.setText("Ignore");
+                        btn_two.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+    //                            Intent intent = new Intent(mContext,DriveActivity.class);
+    //                            intent.putExtra("data",msg.encode().toString());
+    //                            mContext.startActivity(intent);
+                            data.ignoreOffer(msg);
+                            LocalBroadcastHandler.sendBroadcast(mContext, LocalBroadcastHandler.OFFERS_UPDATED);
+                            }
+                        });
+                    }
                 }
             }
 
 
-            String dateString = new SimpleDateFormat("dd LLL HH:mm").format(new Date(msg.arrivalTime));
-            String dateString2 = new SimpleDateFormat("dd LLL HH:mm").format(new Date(msg.endTime));
+            String dateString = new SimpleDateFormat("dd LLL HH:mm aa").format(new Date(msg.arrivalTime));
+            String dateString2 = new SimpleDateFormat("dd LLL HH:mm aa").format(new Date(msg.endTime));
             tv_subheader2.setText(dateString+" - "+dateString2);
 
             btn_one.setVisibility((data.isAccepted(msg.jobId))?View.GONE:View.VISIBLE);

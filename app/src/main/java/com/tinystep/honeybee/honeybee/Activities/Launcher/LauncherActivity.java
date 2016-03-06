@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,13 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
-import com.astuetz.PagerSlidingTabStrip;
-import com.tinystep.honeybee.honeybee.Activities.Main.DoneFragment;
-import com.tinystep.honeybee.honeybee.Activities.Main.OffersFragment;
-import com.tinystep.honeybee.honeybee.Activities.Main.UserFragment;
-import com.tinystep.honeybee.honeybee.Activities.Map.MapsActivity;
 import com.tinystep.honeybee.honeybee.Controllers.LocalBroadcastHandler;
 import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.R;
@@ -44,36 +37,23 @@ public class LauncherActivity extends AppCompatActivity {
      */
     ViewPager mViewPager;
     Data data;
-    View btn_curate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_launcher);
         if(getSupportActionBar()!=null) getSupportActionBar().hide();
 
         data = MainApplication.getInstance().data;
         data.completePullFromServer();
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
-        btn_curate = findViewById(R.id.btn_curate);
-        btn_curate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LauncherActivity.this,MapsActivity.class);
-                startActivityForResult(intent,200);
-            }
-        });
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setOffscreenPageLimit(4);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        // Bind the tabs to the ViewPager
-        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        tabs.setTextColor(Color.parseColor("#ffffffff"));
-        tabs.setViewPager(mViewPager);
 
     }
 
@@ -81,11 +61,7 @@ public class LauncherActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(LocalBroadcastHandler.OFFERS_UPDATED));
-        if(mSectionsPagerAdapter!=null){
-            mSectionsPagerAdapter.getDoneFrag().notifyDataSetChanged();
-            mSectionsPagerAdapter.getOffersFrag().notifyDataSetChanged();
-            mSectionsPagerAdapter.getUserFrag().pullFromServer(null);
-        }
+        mSectionsPagerAdapter.getLauncherFrag().notifyDataSetChanged();
     }
 
     // handler for received Intents from xmppservice
@@ -94,9 +70,7 @@ public class LauncherActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             Logg.d(TAG, "Refreshing each chats page ");
             if(mSectionsPagerAdapter!=null){
-                mSectionsPagerAdapter.getDoneFrag().notifyDataSetChanged();
-                mSectionsPagerAdapter.getOffersFrag().notifyDataSetChanged();
-                mSectionsPagerAdapter.getUserFrag().pullFromServer(null);
+                mSectionsPagerAdapter.getLauncherFrag().notifyDataSetChanged();
             }
         }
     };
@@ -120,15 +94,14 @@ public class LauncherActivity extends AppCompatActivity {
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         LauncherActivity mActivity;
-        OffersFragment offersFragment;
-        UserFragment userFragment;
-        DoneFragment doneFragment;
+        GridFragment gridFrag;
+        LauncherFragment launcherFrag;
+
         public SectionsPagerAdapter(FragmentManager fm, LauncherActivity activity) {
             super(fm);
             mActivity = activity;
-            offersFragment = OffersFragment.newInstance(mActivity);
-            doneFragment = DoneFragment.newInstance(mActivity);
-            userFragment = UserFragment.newInstance(mActivity);
+            launcherFrag = LauncherFragment.newInstance(mActivity);
+            gridFrag = GridFragment.newInstance(mActivity);
         }
 
         @Override
@@ -136,17 +109,16 @@ public class LauncherActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
-                case 0: return offersFragment;
-                case 1: return doneFragment;
-                case 2: return userFragment;
+                case 0: return launcherFrag;
+                case 1: return gridFrag;
             }
-            return offersFragment;
+            return gridFrag;
         }
 
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return 3;
+            return 2;
         }
 
         @Override
@@ -160,15 +132,10 @@ public class LauncherActivity extends AppCompatActivity {
             return "";
         }
 
-        public OffersFragment getOffersFrag(){
-            return offersFragment;
+        public LauncherFragment getLauncherFrag(){
+            return launcherFrag;
         }
-        public DoneFragment getDoneFrag(){
-            return doneFragment;
-        }
-        public UserFragment getUserFrag(){
-            return userFragment;
-        }
+
     }
 
     @Override

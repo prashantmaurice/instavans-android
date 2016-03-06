@@ -67,7 +67,7 @@ public class LoginActivity extends FragmentActivity {
 
         JSONObject obj = new JSONObject();
         try {
-            obj.put("name",name);
+            obj.put("userId",name);
         } catch (JSONException e) {e.printStackTrace();}
 
         MainApplication.getInstance().addRequest(Request.Method.POST, url, obj, new Response.Listener<JSONObject>() {

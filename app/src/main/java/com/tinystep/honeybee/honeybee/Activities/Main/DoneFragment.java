@@ -45,6 +45,7 @@ public class DoneFragment extends android.support.v4.app.Fragment {
     public static DoneFragment newInstance(MainActivity activityContext) {
         DoneFragment myFragment = new DoneFragment();
         myFragment.mActivity = activityContext;
+        myFragment.data = Data.getInstance(activityContext);
         return myFragment;
     }
 
@@ -62,7 +63,6 @@ public class DoneFragment extends android.support.v4.app.Fragment {
 
         notificationsLV = (ListView) rootView.findViewById(R.id.notificationsLV);
 
-        data = Data.getInstance(mActivity);
         cont_noevents = rootView.findViewById(R.id.cont_noevents);
         adapter = new DoneFragAdapter(getActivity(), allSMSDirectories);
         notificationsLV.setAdapter(adapter);

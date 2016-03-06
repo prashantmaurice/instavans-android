@@ -1,4 +1,4 @@
-package com.tinystep.honeybee.honeybee.Activities.Main;
+package com.tinystep.honeybee.honeybee.Activities.Launcher;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import android.widget.ListView;
 
 import com.hudomju.swipe.SwipeToDismissTouchListener;
 import com.hudomju.swipe.adapter.ListViewAdapter;
+import com.tinystep.honeybee.honeybee.Activities.Main.OffersFragAdapter;
 import com.tinystep.honeybee.honeybee.Controllers.ToastMain;
 import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.Models.JobObj;
@@ -29,9 +30,9 @@ import java.util.Comparator;
 /**
  * This is the main fragment user for listing user Notifications
  */
-public class OffersFragment extends android.support.v4.app.Fragment {
+public class LauncherFragment extends android.support.v4.app.Fragment {
 
-    public MainActivity mActivity;
+    public LauncherActivity mActivity;
     ArrayList<JobObj> allSMSDirectories = new ArrayList<>();
     ListView notificationsLV;
     SwipeRefreshLayout refresh_cont;
@@ -39,13 +40,12 @@ public class OffersFragment extends android.support.v4.app.Fragment {
     View cont_noevents;
     Data data;
 
-    public OffersFragment() {
+    public LauncherFragment() {
     }
 
-    public static OffersFragment newInstance(MainActivity activityContext) {
-        OffersFragment myFragment = new OffersFragment();
+    public static LauncherFragment newInstance(LauncherActivity activityContext) {
+        LauncherFragment myFragment = new LauncherFragment();
         myFragment.mActivity = activityContext;
-        myFragment.data = Data.getInstance(activityContext);
         return myFragment;
     }
 
@@ -64,7 +64,7 @@ public class OffersFragment extends android.support.v4.app.Fragment {
         notificationsLV = (ListView) rootView.findViewById(R.id.notificationsLV);
 
         cont_noevents = rootView.findViewById(R.id.cont_noevents);
-
+        data = Data.getInstance(mActivity);
         adapter = new OffersFragAdapter(getActivity(), allSMSDirectories);
         notificationsLV.setAdapter(adapter);
         refresh_cont = (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_cont);
@@ -174,7 +174,7 @@ public class OffersFragment extends android.support.v4.app.Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.mActivity = (MainActivity) activity;
+        this.mActivity = (LauncherActivity) activity;
     }
 
 }

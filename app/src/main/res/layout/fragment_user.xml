@@ -35,5 +35,16 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center_horizontal" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LOGOUT"
+        android:id="@+id/btn_logout"
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"
+        android:padding="10dp"
+        android:background="@color/ColorPrimary"
+        android:textColor="#fff" />
+
 
 </LinearLayout>

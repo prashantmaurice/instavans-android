@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.tinystep.honeybee.honeybee.Activities.Login.LoginActivity;
 import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.Models.UserMain;
 import com.tinystep.honeybee.honeybee.R;
@@ -30,7 +31,7 @@ public class UserFragment extends android.support.v4.app.Fragment {
     String TAG = "USERFRAG";
     public MainActivity mActivity;
 
-    TextView tv_name, tv_score;
+    TextView tv_name, tv_score,btn_logout;
 
     public UserFragment() {
     }
@@ -54,14 +55,35 @@ public class UserFragment extends android.support.v4.app.Fragment {
         rootView = inflater.inflate(R.layout.fragment_user, null);
         tv_name = (TextView) rootView.findViewById(R.id.tv_name);
         tv_score = (TextView) rootView.findViewById(R.id.tv_score);
+        btn_logout = (TextView) rootView.findViewById(R.id.btn_logout);
+
+        btn_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
+            }
+        });
+
+
         refreshUI();
         pullFromServer(null);
         return rootView;
     }
+
+    private void logout(){
+        MainApplication.getInstance().data.userMain.logout();
+
+        Intent intent = new Intent(mActivity, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        mActivity.finish();
+    }
+
     private void refreshUI() {
         UserMain userMain = MainApplication.getInstance().data.userMain;
-        tv_name.setText(""+userMain.name);
-        tv_score.setText("You have a total of "+userMain.score+" rs since you joined us");
+        if(tv_name!=null)tv_name.setText(""+userMain.name);
+        if(tv_score!=null)tv_score.setText("You have a total of "+userMain.score+" rs since you joined us");
 
     }
 
