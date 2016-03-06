@@ -64,7 +64,7 @@ public class NotificationController {
         if(newjobs.size()==0) return;
         String title = newjobs.size()+" new jobs found...!";
         String smallText = "Tap to see them";
-        showNotification(title,smallText,smallText,FORUM_NOTIFICATION);
+        showNotification(title,smallText,smallText,COMMENT_FORUM_NOTIFICATION);
         data.setAllSeen();
     }
 

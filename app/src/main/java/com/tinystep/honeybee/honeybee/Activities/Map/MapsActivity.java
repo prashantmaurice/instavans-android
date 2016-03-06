@@ -23,10 +23,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.tinystep.honeybee.honeybee.MainApplication;
 import com.tinystep.honeybee.honeybee.Models.JobObj;
+import com.tinystep.honeybee.honeybee.Models.UserMain;
 import com.tinystep.honeybee.honeybee.R;
 import com.tinystep.honeybee.honeybee.Utils.Logg;
+import com.tinystep.honeybee.honeybee.Views.JobViewBuilder;
 import com.tinystep.honeybee.honeybee.storage.Data;
+
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 public class MapsActivity extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     static final String TAG = "MAPSACTIVITY";
@@ -204,8 +210,13 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
         public void inflateData(final JobObj msg){
             Logg.d(TAG, "Inflating data in Job view");
-            tv_header.setText(""+msg.address);
-            tv_subheader.setText(""+msg.arrivalTime);
+            tv_header.setText("["+msg.getCreator()+":"+msg.jobId+"]"+msg.address);
+            String dateString = new SimpleDateFormat("dd LLL HH:mm aa").format(new Date(msg.arrivalTime));
+            String dateString2 = new SimpleDateFormat("dd LLL HH:mm aa").format(new Date(msg.endTime));
+            tv_subheader2.setText(dateString+" - "+dateString2);
+
+            UserMain userMain = MainApplication.getInstance().data.userMain;
+            tv_subheader.setText("Rs."+msg.cost+" ("+ JobViewBuilder.ViewHolder.round(Data.distFrom((float) userMain.lat, (float) userMain.longg, (float) msg.lat, (float) msg.longg)/1000,1)+"km)");
         }
 
         public void setData(JobObj data) {

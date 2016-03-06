@@ -18,7 +18,7 @@ this is the android app built for instavans hackathon
 
 
 ## Server
-[http://docs.opencv.org/](http://docs.opencv.org/2.4/modules/calib3d/doc/camera_calibration_and_3d_reconstruction.html)
+[https://github.com/UmangGanvir/instavans_hackathon_backend](https://github.com/UmangGanvir/instavans_hackathon_backend)
 
 ## Developed By
 
