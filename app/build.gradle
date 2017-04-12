@@ -29,4 +29,4 @@ dependencies {
     compile 'com.hudomju:swipe-to-dismiss-undo:1.0'
     compile 'com.github.nkzawa:socket.io-client:0.3.0'
 
-}
+

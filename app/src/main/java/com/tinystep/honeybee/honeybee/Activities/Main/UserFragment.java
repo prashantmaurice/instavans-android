@@ -15,6 +15,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.tinystep.honeybee.honeybee.Activities.Login.LoginActivity;
 import com.tinystep.honeybee.honeybee.MainApplication;
+import com.tinystep.honeybee.honeybee.Models.JobObj;
 import com.tinystep.honeybee.honeybee.Models.UserMain;
 import com.tinystep.honeybee.honeybee.R;
 import com.tinystep.honeybee.honeybee.Utils.Logg;
@@ -83,7 +84,23 @@ public class UserFragment extends android.support.v4.app.Fragment {
     private void refreshUI() {
         UserMain userMain = MainApplication.getInstance().data.userMain;
         if(tv_name!=null)tv_name.setText(""+userMain.name);
-        if(tv_score!=null)tv_score.setText("You have a total of "+userMain.score+" rs since you joined us");
+        int score = userMain.score;
+        for(JobObj obj : MainApplication.getInstance().data.done){
+
+            if(userMain.isInTransit(obj.jobId)){
+
+            }else if(userMain.isTrackFinished(obj.jobId)){
+
+            }else {
+
+                long millis = obj.arrivalTime - System.currentTimeMillis();
+                if (millis < 0) {
+                    //MISSED
+                    score -= obj.cost;
+                }
+            }
+        }
+        if(tv_score!=null)tv_score.setText("You have a total of "+score+" rs since you joined us");
 
     }
 
